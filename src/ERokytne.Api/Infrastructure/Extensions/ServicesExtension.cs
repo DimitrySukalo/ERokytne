@@ -1,10 +1,7 @@
-using ERokytne.Api.Services;
 using ERokytne.Application.Telegram.Commands;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -20,13 +17,31 @@ public static class ServicesExtension
             options.KnownNetworks.Clear();
             options.KnownProxies.Clear();
         });
-        
-        services.AddSingleton<FileExtensionContentTypeProvider>();
+
+        services.AddMasstransitConfiguration(configuration);
+
         services.AddHttpContextAccessor();
+        services.AddRedis(configuration);
         services.AddMediatR(typeof(NotFoundCommand).Assembly);
-        services.AddTransient<IEmailSender, FakeEmailSender>();
     }
 
+    private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisConnectionString = configuration.GetConnectionString("RedisCacheConnectionString");
+
+        if (string.IsNullOrWhiteSpace(redisConnectionString))
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+            });
+        }
+    }
+    
     public static async Task InitDatabase(IConfiguration configuration, WebApplication webApplication)
     {
         if (!configuration.GetValue<bool>("General:AutoMigrations"))

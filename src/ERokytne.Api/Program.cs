@@ -1,6 +1,7 @@
 using ERokytne.Api.Infrastructure.Extensions;
 using ERokytne.Domain.Entities;
 using ERokytne.Persistence;
+using ERokytne.Telegram;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Formatting.Json;
@@ -50,6 +51,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.ConfigureControllers();
 builder.Services.AddDiServices(configuration);
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddInfrastructure(configuration);
+builder.Services.AddTelegramBot(configuration);
+
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
