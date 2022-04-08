@@ -23,6 +23,7 @@ public static class ControllersExtension
     {
         webApplication.UseEndpoints(endpoints =>
         {
+            endpoints.MapApplicationHealthChecks();
             endpoints.MapControllers();
             endpoints.MapDefaultControllerRoute();
         });

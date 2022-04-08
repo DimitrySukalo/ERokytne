@@ -51,7 +51,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.ConfigureControllers();
 builder.Services.AddDiServices(configuration);
 builder.Services.AddSwaggerGen();
-
+builder.Services.ConfigureControllers();
 builder.Services.AddInfrastructure(configuration);
 builder.Services.AddTelegramBot(configuration);
 
