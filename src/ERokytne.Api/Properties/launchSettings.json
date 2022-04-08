@@ -1,0 +1,14 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "ERokytne.Api": {
+      "commandName": "Project",
+      "applicationUrl": "https://localhost:5004",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "GOOGLE_APPLICATION_CREDENTIALS": "../../GoogleAppCredentials.json",
+        "ASPNETCORE_APPL_PATH": "/erokytne"
+      }
+    }
+  }
+}

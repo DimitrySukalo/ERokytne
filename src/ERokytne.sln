@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Api", "ERokytne.Api\ERokytne.Api.csproj", "{CDD0BC24-6416-4272-97D8-05DAD532F545}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Domain", "ERokytne.Domain\ERokytne.Domain.csproj", "{00A4FBDB-8BFC-437D-AA8C-6F97A3A1AE65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Telegram", "ERokytne.Telegram\ERokytne.Telegram.csproj", "{1F612A29-CF9D-4582-8E8B-A8244068B853}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Persistence", "ERokytne.Persistence\ERokytne.Persistence.csproj", "{3F79B204-7275-4815-B1EB-703976E93AC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Application", "ERokytne.Application\ERokytne.Application.csproj", "{F0FE4B3D-41A1-4F7D-AE27-AED222118749}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Infrastructure", "ERokytne.Infrastructure\ERokytne.Infrastructure.csproj", "{F07E660A-05BE-4F49-B036-4057B8F9CF8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDD0BC24-6416-4272-97D8-05DAD532F545}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDD0BC24-6416-4272-97D8-05DAD532F545}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDD0BC24-6416-4272-97D8-05DAD532F545}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDD0BC24-6416-4272-97D8-05DAD532F545}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00A4FBDB-8BFC-437D-AA8C-6F97A3A1AE65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A4FBDB-8BFC-437D-AA8C-6F97A3A1AE65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00A4FBDB-8BFC-437D-AA8C-6F97A3A1AE65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00A4FBDB-8BFC-437D-AA8C-6F97A3A1AE65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F612A29-CF9D-4582-8E8B-A8244068B853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F612A29-CF9D-4582-8E8B-A8244068B853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F612A29-CF9D-4582-8E8B-A8244068B853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F612A29-CF9D-4582-8E8B-A8244068B853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F79B204-7275-4815-B1EB-703976E93AC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F79B204-7275-4815-B1EB-703976E93AC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F79B204-7275-4815-B1EB-703976E93AC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F79B204-7275-4815-B1EB-703976E93AC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0FE4B3D-41A1-4F7D-AE27-AED222118749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0FE4B3D-41A1-4F7D-AE27-AED222118749}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0FE4B3D-41A1-4F7D-AE27-AED222118749}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0FE4B3D-41A1-4F7D-AE27-AED222118749}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F07E660A-05BE-4F49-B036-4057B8F9CF8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F07E660A-05BE-4F49-B036-4057B8F9CF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F07E660A-05BE-4F49-B036-4057B8F9CF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F07E660A-05BE-4F49-B036-4057B8F9CF8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
