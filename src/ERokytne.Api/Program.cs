@@ -34,7 +34,7 @@ if (!builder.Environment.IsDevelopment())
     loggerConfiguration
         .WriteTo.GoogleCloudLogging(new GoogleCloudLoggingSinkOptions
         {
-            ProjectId = "rivne-help", UseJsonOutput = true, ServiceName = "AirRaidBot"
+            ProjectId = "ERokytne", UseJsonOutput = true, ServiceName = "erokytne-bot"
         });
 }
 
