@@ -2,6 +2,7 @@ using ERokytne.Application.Cache;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Domain.Entities;
+using ERokytne.Domain.Enums;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,8 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
             .FirstOrDefaultAsync(e => e.ChatId == request.ChatId && !e.IsRemoved, cancellationToken)
                    ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
 
-        if (user.Announcements.Count(e => e.CreatedOn.Date == DateTime.UtcNow.Date) >= 3)
+        if (user.Announcements.Count(e => e.CreatedOn.Date == DateTime.UtcNow.Date) >= 3 && 
+            user.Type == TelegramUserType.User)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
                 "Ви витратили ліміт оголошень на сьогодні 😿",
