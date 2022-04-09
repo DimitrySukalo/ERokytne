@@ -29,14 +29,14 @@ var loggerConfiguration = new LoggerConfiguration()
         shared: true)
     .WriteTo.Console();
 
-if (!builder.Environment.IsDevelopment())
-{
-    loggerConfiguration
-        .WriteTo.GoogleCloudLogging(new GoogleCloudLoggingSinkOptions
-        {
-            ProjectId = "ERokytne", UseJsonOutput = true, ServiceName = "erokytne-bot"
-        });
-}
+// if (!builder.Environment.IsDevelopment())
+// {
+//     loggerConfiguration
+//         .WriteTo.GoogleCloudLogging(new GoogleCloudLoggingSinkOptions
+//         {
+//             ProjectId = "ERokytne", UseJsonOutput = true, ServiceName = "erokytne-bot"
+//         });
+// }
 
 Log.Logger = loggerConfiguration
     .ReadFrom.Configuration(configuration)
