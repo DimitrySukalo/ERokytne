@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ERokytne.Application\ERokytne.Application.csproj" />
       <ProjectReference Include="..\ERokytne.Persistence\ERokytne.Persistence.csproj" />
     </ItemGroup>
 

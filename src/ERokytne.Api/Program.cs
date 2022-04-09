@@ -56,7 +56,7 @@ builder.Services.AddTelegramBot(configuration);
 builder.Services.AddDiServices(configuration);
 
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<Admin>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 var mvcBuilder = builder.Services.AddRazorPages();
 

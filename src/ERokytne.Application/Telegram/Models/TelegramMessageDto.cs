@@ -8,6 +8,8 @@ public class TelegramMessageDto
         
     public string? Text { get; set; }
         
+    public string? FileId { get; set; }
+    
     public TelegramUserDto UserDto { get; set; }
     
     public MessageType Type { get; set; }
