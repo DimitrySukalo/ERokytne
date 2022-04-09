@@ -186,7 +186,7 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
             {
                 ChatId = update.Message.Chat.Id,
 
-                Text = update.Message.Text,
+                Text = "file",
                 UserDto = new TelegramUserDto
                 {
                     FirstName = update.Message.From!.FirstName,

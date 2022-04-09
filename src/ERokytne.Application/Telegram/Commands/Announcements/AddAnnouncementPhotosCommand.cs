@@ -1,3 +1,4 @@
+using ERokytne.Domain.Entities;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,13 @@ public class AddAnnouncementPhotosCommandHandler : IRequestHandler<AddAnnounceme
                 cancellationToken) ?? 
             throw new ArgumentNullException($"Announcement with id {request.AnnouncementId} is not found");
         
+        
+        announcement.Photos.Add(new Photo
+        {
+            Path = request.FileId
+        });
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
         
         await _client.SendTextMessageAsync(request.ChatId!, 
             "Фото успішно збережені. Оберіть наступну дію нижче", cancellationToken: cancellationToken);

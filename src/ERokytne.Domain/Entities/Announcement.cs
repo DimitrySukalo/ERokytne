@@ -7,8 +7,8 @@ public class Announcement : IEntity<Guid>
     public Guid Id { get; set; }
     
     public string? Text { get; set; }
-    
-    public List<Photo> Photos { get; set; }
+
+    public List<Photo> Photos { get; set; } = new();
     
     public Guid TelegramUserId { get; set; }
     

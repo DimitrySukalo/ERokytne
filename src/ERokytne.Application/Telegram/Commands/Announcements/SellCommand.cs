@@ -6,6 +6,7 @@ using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ERokytne.Application.Telegram.Commands.Announcements;
 
@@ -49,7 +50,7 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
             });
 
         await _client.SendTextMessageAsync(request.ChatId!, "Введіть текст, який буде відображений у вашому оголошенні.",
-            cancellationToken: cancellationToken);
+            replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
         
         return Unit.Value;
     }

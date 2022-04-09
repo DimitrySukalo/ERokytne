@@ -22,7 +22,7 @@ public static class UserCommandHelper
             return lastCommand.PreviousCommand switch
             {
                 BotConstants.Commands.SellCommand => GetAddCarMessageCommand(message, lastCommand.Id),
-                BotConstants.Commands.AnnouncementEnteredText when message.Type == MessageType.Text
+                BotConstants.Commands.AnnouncementEnteredText when message.Type is MessageType.Photo or MessageType.Document
                     => GetAddCarPhotosCommand(message, lastCommand.Id),
                 _ => null
             };
