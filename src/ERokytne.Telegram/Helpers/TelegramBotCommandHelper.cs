@@ -86,7 +86,8 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         await RemoveCache(message);
         return new SellCommand
         {
-           ChatId = message.ChatId.ToString()
+           ChatId = message.ChatId.ToString(),
+           NickName = message.UserDto.NickName
         };
     }
     

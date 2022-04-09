@@ -1,3 +1,4 @@
+using System.Text;
 using ERokytne.Application.Cache;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
@@ -50,7 +51,14 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         var announcementGroup = await _dbContext.Groups.AsNoTracking()
                                     .FirstOrDefaultAsync(e => e.IsConfirmed && e.Type == GroupType.Announcement, cancellationToken)
                                 ?? throw new ArgumentNullException("Announcement confirmed group is not found");
+        
+        var postIdentification =
+            string.IsNullOrWhiteSpace(user.NickName) ? user.PhoneNumber : user.NickName;
 
+        var text = new StringBuilder();
+        text.Append($"{announcement.Text}\n");
+        text.Append($"Користувач: {postIdentification}");
+        
         if (announcement.Photos.Count > 0)
         {
             using var photos = new StreamCollection();
@@ -70,7 +78,7 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
                 {
                     photo = new InputMediaPhoto(new InputMedia(photos[i], Guid.NewGuid().ToString()))
                     {
-                        Caption = announcement.Text
+                        Caption = text.ToString()
                     };
                 }
                 else
@@ -86,7 +94,7 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         }
         else
         {
-            await _client.SendTextMessageAsync(announcementGroup.ExternalId!, announcement.Text!, 
+            await _client.SendTextMessageAsync(announcementGroup.ExternalId!, text.ToString(), 
                 cancellationToken: cancellationToken);
         }
         
