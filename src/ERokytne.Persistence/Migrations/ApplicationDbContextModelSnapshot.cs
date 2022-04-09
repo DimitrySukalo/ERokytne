@@ -99,6 +99,32 @@ namespace ERokytne.Persistence.Migrations
                     b.ToTable("Admins", (string)null);
                 });
 
+            modelBuilder.Entity("ERokytne.Domain.Entities.Announcement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TelegramUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TelegramUserId");
+
+                    b.ToTable("Announcements", (string)null);
+                });
+
             modelBuilder.Entity("ERokytne.Domain.Entities.Group", b =>
                 {
                     b.Property<Guid>("Id")
@@ -115,7 +141,7 @@ namespace ERokytne.Persistence.Migrations
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ThingType")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -126,6 +152,37 @@ namespace ERokytne.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups", (string)null);
+                });
+
+            modelBuilder.Entity("ERokytne.Domain.Entities.Photo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AnnouncementId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnnouncementId");
+
+                    b.ToTable("Photos", (string)null);
                 });
 
             modelBuilder.Entity("ERokytne.Domain.Entities.TelegramUser", b =>
@@ -297,6 +354,26 @@ namespace ERokytne.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ERokytne.Domain.Entities.Announcement", b =>
+                {
+                    b.HasOne("ERokytne.Domain.Entities.TelegramUser", "TelegramUser")
+                        .WithMany("Announcements")
+                        .HasForeignKey("TelegramUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TelegramUser");
+                });
+
+            modelBuilder.Entity("ERokytne.Domain.Entities.Photo", b =>
+                {
+                    b.HasOne("ERokytne.Domain.Entities.Announcement", "Announcement")
+                        .WithMany("Photos")
+                        .HasForeignKey("AnnouncementId");
+
+                    b.Navigation("Announcement");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -346,6 +423,16 @@ namespace ERokytne.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ERokytne.Domain.Entities.Announcement", b =>
+                {
+                    b.Navigation("Photos");
+                });
+
+            modelBuilder.Entity("ERokytne.Domain.Entities.TelegramUser", b =>
+                {
+                    b.Navigation("Announcements");
                 });
 #pragma warning restore 612, 618
         }

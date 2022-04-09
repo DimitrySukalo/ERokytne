@@ -15,5 +15,8 @@ public class TelegramUserEntityTypeConfiguration : IEntityTypeConfiguration<Tele
         builder.Property(e => e.NickName).HasMaxLength(200);
         builder.Property(e => e.ChatId).HasMaxLength(100);
         builder.Property(e => e.PhoneNumber).HasMaxLength(30);
+
+        builder.HasMany(e => e.Announcements).WithOne(e => e.TelegramUser)
+            .HasForeignKey(e => e.TelegramUserId);
     }
 }

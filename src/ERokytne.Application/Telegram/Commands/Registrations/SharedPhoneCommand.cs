@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace ERokytne.Application.Telegram.Commands;
+namespace ERokytne.Application.Telegram.Commands.Registrations;
 
 public class SharedPhoneCommand : IRequest
 {
@@ -32,7 +32,8 @@ public class SharedPhoneCommandHandler : IRequestHandler<SharedPhoneCommand>
 
     public async Task<Unit> Handle(SharedPhoneCommand request, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.TelegramUsers.FirstOrDefaultAsync(e => e.PhoneNumber == request.Phone,
+        var user = await _dbContext.TelegramUsers
+            .FirstOrDefaultAsync(e => e.PhoneNumber == request.Phone && !e.IsRemoved,
             cancellationToken);
 
         if (user is null)
@@ -65,7 +66,7 @@ public class SharedPhoneCommandHandler : IRequestHandler<SharedPhoneCommand>
     {
         var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
         {
-            new(BotConstants.Commands.SellCar),
+            new(BotConstants.Commands.SellCommand),
         })
         {
             ResizeKeyboard = true

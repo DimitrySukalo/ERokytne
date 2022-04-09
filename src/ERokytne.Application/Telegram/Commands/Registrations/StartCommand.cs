@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace ERokytne.Application.Telegram.Commands;
+namespace ERokytne.Application.Telegram.Commands.Registrations;
 
 public class StartCommand : IRequest
 {
@@ -44,7 +44,7 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
         {
             var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
             {
-                new(BotConstants.Commands.SellCar)
+                new(BotConstants.Commands.SellCommand)
             })
             {
                 ResizeKeyboard = true

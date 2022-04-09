@@ -1,4 +1,8 @@
-using ERokytne.Application.Telegram.Commands;
+using ERokytne.Application.Cache;
+using ERokytne.Application.Helpers;
+using ERokytne.Application.Telegram.Commands.Announcements;
+using ERokytne.Application.Telegram.Commands.Groups;
+using ERokytne.Application.Telegram.Commands.Registrations;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Telegram.Contracts;
@@ -11,9 +15,18 @@ namespace ERokytne.Telegram.Helpers;
 
 public class TelegramBotCommandHelper : ITelegramBotCommandHelper
 {
-    public IBaseRequest FindCommand(Update update, ITelegramBotClient botClient)
+    private readonly ITelegramBotClient _bot;
+    private readonly UserActionService _service;
+
+    public TelegramBotCommandHelper(ITelegramBotClient bot, UserActionService service)
     {
-        var message = GetMessageDto(update, botClient);
+        _bot = bot;
+        _service = service;
+    }
+
+    public async Task<IBaseRequest?> FindCommand(Update update)
+    {
+        var message = GetMessageDto(update, _bot);
         
         if (string.IsNullOrWhiteSpace(message.Text))
         {
@@ -24,10 +37,50 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         {
             MessageType.Text when message.Text.Equals(BotConstants.Commands.StartCommand) =>
                 GetRegisterUserCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.CancelAnnouncement) =>
+                await GetCancelAnnouncementCommand(message),
             MessageType.Contact => GetContactConfirmedCommand(message),
             MessageType.ChatMembersAdded => GetAddGroupCommand(message),
             MessageType.ChatMemberLeft => GetRemoveGroupCommand(message),
-            _ => GetNotFoundCommand(message)
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.SellCommand) =>
+                GetSellCarCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.PostAnnouncement) =>
+                await GetPostAnnouncementCommand(message),
+            _ => await UserCommandHelper.SearchCommand(_service, message)
+        };
+    }
+    
+    private async Task<IRequest> GetCancelAnnouncementCommand(TelegramMessageDto message)
+    {
+        var lastCommand = await _service
+            .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{message.ChatId}",
+                () => Task.FromResult(new AnnouncementCacheModel()));
+        
+        return new CancelAnnouncementCommand
+        {
+            ChatId = message.ChatId.ToString(),
+            Id = lastCommand.Id
+        };
+    }
+    
+    private async Task<IRequest> GetPostAnnouncementCommand(TelegramMessageDto message)
+    {
+        var lastCommand = await _service
+            .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{message.ChatId}",
+                () => Task.FromResult(new AnnouncementCacheModel()));
+        
+        return new PostAnnouncementCommand
+        {
+            ChatId = message.ChatId.ToString(),
+            AnnouncementId = lastCommand.Id
+        };
+    }
+    
+    private static IRequest GetSellCarCommand(TelegramMessageDto message)
+    {
+        return new SellCommand
+        {
+           ChatId = message.ChatId.ToString()
         };
     }
     
@@ -46,14 +99,6 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         {
             GroupId = message.ChatId,
             UserId = message.UserDto.UserId
-        };
-    }
-
-    private static IRequest GetNotFoundCommand(TelegramMessageDto message)
-    {
-        return new NotFoundCommand
-        {
-            ChatId = message.ChatId
         };
     }
     
@@ -133,6 +178,25 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 Type = update.MyChatMember!.NewChatMember.Status is ChatMemberStatus.Left or ChatMemberStatus.Kicked ?
                     MessageType.ChatMemberLeft : MessageType.ChatMembersAdded,
                 Text = "bot is processed"
+            };
+        }
+        else if(update.Message?.Type is MessageType.Photo or MessageType.Document)
+        {
+            messageDto = new TelegramMessageDto
+            {
+                ChatId = update.Message.Chat.Id,
+
+                Text = update.Message.Text,
+                UserDto = new TelegramUserDto
+                {
+                    FirstName = update.Message.From!.FirstName,
+                    LastName = update.Message.From!.LastName,
+                    NickName = update.Message.From!.Username
+                },
+                Type = update.Message!.Type,
+                FileId = update.Message?.Type == MessageType.Photo ? 
+                    update.Message.Photo?[^1].FileId :
+                    update.Message?.Document?.FileId
             };
         }
         else

@@ -13,7 +13,9 @@ public class TelegramUser : IEntity<Guid>
     public string? ChatId { get; set; }
     
     public string? PhoneNumber { get; set; }
-    
+
+    public List<Announcement> Announcements { get; set; } = new();
+
     public bool IsRemoved { get; set; }
     
     public DateTime CreatedOn { get; set; }

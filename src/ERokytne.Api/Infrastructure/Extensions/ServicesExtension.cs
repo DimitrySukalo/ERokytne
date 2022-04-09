@@ -1,3 +1,4 @@
+using ERokytne.Application.Cache;
 using ERokytne.Application.Telegram.Commands;
 using ERokytne.Persistence;
 using MediatR;
@@ -23,6 +24,8 @@ public static class ServicesExtension
         services.AddHttpContextAccessor();
         services.AddRedis(configuration);
         services.AddMediatR(typeof(NotFoundCommand).Assembly);
+        services.AddScoped<UserActionService>();
+
     }
 
     private static void AddRedis(this IServiceCollection services, IConfiguration configuration)

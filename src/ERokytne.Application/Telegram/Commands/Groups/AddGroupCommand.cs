@@ -1,10 +1,11 @@
 using ERokytne.Domain.Entities;
+using ERokytne.Domain.Enums;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 
-namespace ERokytne.Application.Telegram.Commands;
+namespace ERokytne.Application.Telegram.Commands.Groups;
 
 public class AddGroupCommand : IRequest
 {
@@ -42,7 +43,8 @@ public class AddGroupCommandHandler : IRequestHandler<AddGroupCommand>
         group = new Group
         {
             ExternalId = request.GroupId.ToString(),
-            IsConfirmed = false
+            IsConfirmed = false,
+            Type = GroupType.Announcement
         };
 
         await _dbContext.AddAsync(group, cancellationToken);

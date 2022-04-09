@@ -12,7 +12,7 @@ public class GroupEntityTypeConfiguration : IEntityTypeConfiguration<Group>
         builder.ToTable("Groups");
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.ThingType).HasConversion<string>().HasMaxLength(50);
+        builder.Property(e => e.Type).HasConversion<string>().HasMaxLength(50);
         builder.Property(e => e.ExternalId).HasMaxLength(500);
         builder.Property(e => e.CreatedOn).HasConversion(new DateTimeValueConverter());
     }

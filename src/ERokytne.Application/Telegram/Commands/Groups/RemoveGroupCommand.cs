@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 
-namespace ERokytne.Application.Telegram.Commands;
+namespace ERokytne.Application.Telegram.Commands.Groups;
 
 public class RemoveGroupCommand : IRequest
 {

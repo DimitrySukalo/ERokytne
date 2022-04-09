@@ -3,15 +3,17 @@ using ERokytne.Domain.Enums;
 
 namespace ERokytne.Domain.Entities;
 
-public class Group : IEntity<Guid>
+public class Photo : IEntity<Guid>
 {
     public Guid Id { get; set; }
-
-    public string? ExternalId { get; set; }
+    
+    public string? Path { get; set; }
     
     public GroupType Type { get; set; }
     
-    public bool IsConfirmed { get; set; }
+    public Guid? AnnouncementId { get; set; }
+    
+    public Announcement? Announcement { get; set; }
     
     public DateTime CreatedOn { get; set; }
     

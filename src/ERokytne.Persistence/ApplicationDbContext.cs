@@ -10,6 +10,10 @@ public class ApplicationDbContext : IdentityDbContext<Admin>
     public DbSet<Group> Groups { get; set; }
 
     public DbSet<TelegramUser> TelegramUsers { get; set; }
+    
+    public DbSet<Photo> Photos { get; set; }
+    
+    public DbSet<Announcement> Announcements { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
