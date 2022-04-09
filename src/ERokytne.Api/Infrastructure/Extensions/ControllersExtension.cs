@@ -16,7 +16,7 @@ public static class ControllersExtension
             .AddJsonOptions(o =>
             {
                 o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+            }).AddNewtonsoftJson();
     }
     
     public static void ConfigureEndpoints(this WebApplication webApplication, string pathBase)

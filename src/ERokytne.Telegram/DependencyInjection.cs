@@ -1,3 +1,5 @@
+using ERokytne.Telegram.Contracts;
+using ERokytne.Telegram.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -12,5 +14,6 @@ public static class DependencyInjection
         telegramBot.SetWebhookAsync(configuration.GetValue<string>("Services:TelegramBot:Url"));
         
         services.AddSingleton<ITelegramBotClient, TelegramBotClient>(_ => telegramBot);
+        services.AddScoped<ITelegramBotCommandHelper, TelegramBotCommandHelper>();
     }
 }

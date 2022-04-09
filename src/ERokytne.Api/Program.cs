@@ -49,11 +49,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.ConfigureControllers();
-builder.Services.AddDiServices(configuration);
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureControllers();
 builder.Services.AddInfrastructure(configuration);
 builder.Services.AddTelegramBot(configuration);
+builder.Services.AddDiServices(configuration);
 
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)

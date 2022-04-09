@@ -1,6 +1,5 @@
 using GreenPipes;
 using MassTransit;
-using MassTransit.Registration;
 using MassTransit.Transactions;
 
 namespace ERokytne.Api.Infrastructure.Extensions;
@@ -20,7 +19,7 @@ public static class MassTransitExtension
             .AddMassTransitHostedService();
     }
     
-    private static IBusControl CreateBusControl(IConfigurationServiceProvider provider, 
+    private static IBusControl CreateBusControl(IServiceProvider provider, 
             IConfiguration configuration)
     {
     

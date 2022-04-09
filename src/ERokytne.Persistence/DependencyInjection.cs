@@ -1,4 +1,3 @@
-using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -9,17 +8,6 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAccessTokenManagement(options =>
-        {
-            options.Client.Clients.Add("identity-client", new ClientCredentialsTokenRequest
-            {
-                Address = $"{configuration.GetValue<string>("Services:Identity:Url").TrimEnd('/')}/connect/token",
-                ClientId = configuration.GetValue<string>("Services:Identity:ClientId"),
-                ClientSecret = configuration.GetValue<string>("Services:Identity:ClientSecret"),
-                Scope = configuration.GetValue<string>("Services:Identity:DefaultScope"),
-            });
-        });
-
         services.AddCache(configuration);
     }
         
