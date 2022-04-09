@@ -1,10 +1,10 @@
-using ERokytne.Domain.Constants;
+using ERokytne.Application.Helpers;
 using ERokytne.Domain.Entities;
+using ERokytne.Domain.Enums;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ERokytne.Application.Telegram.Commands.Registrations;
 
@@ -44,34 +44,22 @@ public class SharedPhoneCommandHandler : IRequestHandler<SharedPhoneCommand>
                 ChatId = request.ChatId.ToString(),
                 IsRemoved = false,
                 NickName = request.NickName,
-                FullName = request.FullName
+                FullName = request.FullName,
+                Type = TelegramUserType.User
             };
 
             await _dbContext.TelegramUsers.AddAsync(user, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
             
             await _bot.SendTextMessageAsync(request.ChatId, "Ви успішно зареєструвалися. Ваші можливості нижче ⬇️",
-                replyMarkup: GetActionMenuMessage(), cancellationToken: cancellationToken);
+                replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
             
             return Unit.Value;
         }
         
         await _bot.SendTextMessageAsync(request.ChatId, "Ви уже зареєстровані"
-            ,replyMarkup: GetActionMenuMessage(), cancellationToken: cancellationToken);
+            ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
 
         return Unit.Value;
-    }
-
-    private static ReplyKeyboardMarkup GetActionMenuMessage()
-    {
-        var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
-        {
-            new(BotConstants.Commands.SellCommand),
-        })
-        {
-            ResizeKeyboard = true
-        };
-
-        return menu;
     }
 }

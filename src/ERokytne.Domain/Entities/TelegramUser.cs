@@ -1,4 +1,5 @@
 using ERokytne.Domain.Contracts;
+using ERokytne.Domain.Enums;
 
 namespace ERokytne.Domain.Entities;
 
@@ -13,6 +14,8 @@ public class TelegramUser : IEntity<Guid>
     public string? ChatId { get; set; }
     
     public string? PhoneNumber { get; set; }
+    
+    public TelegramUserType Type { get; set; }
 
     public List<Announcement> Announcements { get; set; } = new();
 

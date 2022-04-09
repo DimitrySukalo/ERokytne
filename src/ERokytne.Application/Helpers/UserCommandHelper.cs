@@ -5,6 +5,7 @@ using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using MediatR;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ERokytne.Application.Helpers;
 
@@ -31,6 +32,18 @@ public static class UserCommandHelper
         return new NotFoundCommand
         {
             ChatId = message.ChatId
+        };
+    }
+
+    public static ReplyKeyboardMarkup GetStartMenu()
+    {
+        return new ReplyKeyboardMarkup(new List<KeyboardButton>
+        {
+            new(BotConstants.Commands.SellCommand),
+            new(BotConstants.Commands.MyAnnouncementsCommand)
+        })
+        {
+            ResizeKeyboard = true
         };
     }
 

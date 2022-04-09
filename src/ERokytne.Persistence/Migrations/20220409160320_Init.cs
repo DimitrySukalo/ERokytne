@@ -73,6 +73,7 @@ namespace ERokytne.Persistence.Migrations
                     NickName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     ChatId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     IsRemoved = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)

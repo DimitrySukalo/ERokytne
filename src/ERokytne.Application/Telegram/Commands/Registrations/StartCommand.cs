@@ -1,4 +1,4 @@
-using ERokytne.Domain.Constants;
+using ERokytne.Application.Helpers;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -42,16 +42,8 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
         }
         else
         {
-            var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
-            {
-                new(BotConstants.Commands.SellCommand)
-            })
-            {
-                ResizeKeyboard = true
-            };
-            
             await _bot.SendTextMessageAsync(request.ChatId, "Ви уже зареєстровані 👌"
-                ,replyMarkup: menu, cancellationToken: cancellationToken);
+                ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
         }
         
         

@@ -39,6 +39,8 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 await GetRegisterUserCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.CancelAnnouncement) =>
                 await GetCancelAnnouncementCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.MyAnnouncementsCommand) =>
+                await GetMyAnnouncementsCommand(message),
             MessageType.Contact => await GetContactConfirmedCommand(message),
             MessageType.ChatMembersAdded => await GetAddGroupCommand(message),
             MessageType.ChatMemberLeft => await GetRemoveGroupCommand(message),
@@ -53,6 +55,15 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     private async Task RemoveCache(TelegramMessageDto messageDto)
     {
         await _service.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}");
+    }
+
+    private async Task<IBaseRequest> GetMyAnnouncementsCommand(TelegramMessageDto message)
+    {
+        await RemoveCache(message);
+        return new MyAnnouncementsCommand
+        {
+            ChatId = message.ChatId.ToString()
+        };
     }
     
     private async Task<IRequest> GetCancelAnnouncementCommand(TelegramMessageDto message)

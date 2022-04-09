@@ -1,5 +1,6 @@
 using System.Text;
 using ERokytne.Application.Cache;
+using ERokytne.Application.Helpers;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Domain.Enums;
@@ -9,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ERokytne.Application.Telegram.Commands.Announcements;
 
@@ -53,7 +53,7 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
                                 ?? throw new ArgumentNullException("Announcement confirmed group is not found");
         
         var postIdentification =
-            string.IsNullOrWhiteSpace(user.NickName) ? user.PhoneNumber : user.NickName;
+            string.IsNullOrWhiteSpace(user.NickName) || user.NickName.Equals("@") ? user.PhoneNumber : user.NickName;
 
         var text = new StringBuilder();
         text.Append($"{announcement.Text}\n");
@@ -99,18 +99,10 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         }
         
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
-        
-        var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
-        {
-            new(BotConstants.Commands.SellCommand)
-        })
-        {
-            ResizeKeyboard = true
-        };
-            
+
         await _client.SendTextMessageAsync(request.ChatId!, 
             "Оголошення успішно створено! ✅ Тут ви можете переглядати свої та чужі оголошення: https://t.me/+Fxv4RYkSkD5lYjU6"
-            ,replyMarkup: menu, cancellationToken: cancellationToken);
+            ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
         
         return Unit.Value;
     }

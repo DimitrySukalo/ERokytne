@@ -39,7 +39,7 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
         if (user.Announcements.Count(e => e.CreatedOn.Date == DateTime.UtcNow.Date) >= 3)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
-                "Ви витратили ліміт на сьогодні 😿. Якщо хочете опублікувати нове оголошення, видаліть одне з своїх попередніх 😺",
+                "Ви витратили ліміт оголошень на сьогодні 😿",
                 cancellationToken: cancellationToken);
             
             return Unit.Value;

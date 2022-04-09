@@ -1,10 +1,10 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Helpers;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ERokytne.Application.Telegram.Commands.Announcements;
 
@@ -45,17 +45,9 @@ public class CancelAnnouncementCommandHandler : IRequestHandler<CancelAnnounceme
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
-        
-        var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
-        {
-            new(BotConstants.Commands.SellCommand)
-        })
-        {
-            ResizeKeyboard = true
-        };
-            
+
         await _client.SendTextMessageAsync(request.ChatId!, "Оголошення успішно відмінено! ✅"
-            ,replyMarkup: menu, cancellationToken: cancellationToken);
+            ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
         
         return Unit.Value;
     }
