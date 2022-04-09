@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ERokytne.Persistence.Configurations;
 
-public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
+public class AdminEntityTypeConfiguration : IEntityTypeConfiguration<Admin>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<Admin> builder)
     {
         builder.HasKey(e => e.Id);
+        builder.ToTable("Admins");
 
         builder.Property(e => e.UserName).HasMaxLength(256);
         builder.Property(e => e.NormalizedEmail).HasMaxLength(256);
@@ -20,7 +21,5 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.PhoneNumberConfirmed).HasConversion<string>().HasMaxLength(10);
         builder.Property(e => e.TwoFactorEnabled).HasConversion<string>().HasMaxLength(10);
         builder.Property(e => e.LockoutEnabled).HasConversion<string>().HasMaxLength(10);
-        builder.Property(e => e.TelegramChatId).HasMaxLength(100);
-        builder.Property(e => e.UserType).HasConversion<string>().HasMaxLength(50);
     }
 }

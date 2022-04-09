@@ -31,7 +31,10 @@ public class TelegramBotController : ControllerBase
 
         try
         {
-            await _mediator.Send(command);
+            if (command is not null)
+            {
+                await _mediator.Send(command);
+            }
         }
         catch (Exception e)
         {

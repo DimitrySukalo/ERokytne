@@ -1,5 +1,6 @@
 using ERokytne.Application.Telegram.Commands;
 using ERokytne.Application.Telegram.Models;
+using ERokytne.Domain.Constants;
 using ERokytne.Telegram.Contracts;
 using MediatR;
 using Telegram.Bot;
@@ -21,16 +22,55 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
 
         return message.Type switch
         {
-            
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.StartCommand) =>
+                GetRegisterUserCommand(message),
+            MessageType.Contact => GetContactConfirmedCommand(message),
+            MessageType.ChatMembersAdded => GetAddGroupCommand(message),
+            MessageType.ChatMemberLeft => GetRemoveGroupCommand(message),
             _ => GetNotFoundCommand(message)
         };
     }
     
+    private static IRequest GetRemoveGroupCommand(TelegramMessageDto message)
+    {
+        return new RemoveGroupCommand
+        {
+            GroupId = message.ChatId,
+            UserId = message.UserDto.UserId
+        };
+    }
+
+    private static IRequest GetAddGroupCommand(TelegramMessageDto message)
+    {
+        return new AddGroupCommand
+        {
+            GroupId = message.ChatId,
+            UserId = message.UserDto.UserId
+        };
+    }
+
     private static IRequest GetNotFoundCommand(TelegramMessageDto message)
     {
         return new NotFoundCommand
         {
             ChatId = message.ChatId
+        };
+    }
+    
+    private static IRequest GetRegisterUserCommand(TelegramMessageDto message)
+    {
+        return new StartCommand
+        {
+            ChatId = message.ChatId
+        };
+    }
+    
+    private static IRequest GetContactConfirmedCommand(TelegramMessageDto message)
+    {
+        return new SharedPhoneCommand
+        {
+            ChatId = message.ChatId,
+            Phone = message.Text!
         };
     }
 
@@ -57,7 +97,10 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                         : update.Message!.From!.FirstName,
                     LastName = update.CallbackQuery != null
                         ? update.CallbackQuery.From.LastName
-                        : update.Message!.From!.LastName
+                        : update.Message!.From!.LastName,
+                    NickName = update.CallbackQuery != null
+                        ? update.CallbackQuery.From.Username
+                        : update.Message!.From!.Username
                 },
                 Type = (update.CallbackQuery != null
                     ? update.CallbackQuery.Message!.Type
