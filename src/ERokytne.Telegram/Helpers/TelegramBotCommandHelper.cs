@@ -36,18 +36,23 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         return message.Type switch
         {
             MessageType.Text when message.Text.Equals(BotConstants.Commands.StartCommand) =>
-                GetRegisterUserCommand(message),
+                await GetRegisterUserCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.CancelAnnouncement) =>
                 await GetCancelAnnouncementCommand(message),
-            MessageType.Contact => GetContactConfirmedCommand(message),
-            MessageType.ChatMembersAdded => GetAddGroupCommand(message),
-            MessageType.ChatMemberLeft => GetRemoveGroupCommand(message),
+            MessageType.Contact => await GetContactConfirmedCommand(message),
+            MessageType.ChatMembersAdded => await GetAddGroupCommand(message),
+            MessageType.ChatMemberLeft => await GetRemoveGroupCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.SellCommand) =>
-                GetSellCarCommand(message),
+                await GetSellCarCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.PostAnnouncement) =>
                 await GetPostAnnouncementCommand(message),
             _ => await UserCommandHelper.SearchCommand(_service, message)
         };
+    }
+
+    private async Task RemoveCache(TelegramMessageDto messageDto)
+    {
+        await _service.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}");
     }
     
     private async Task<IRequest> GetCancelAnnouncementCommand(TelegramMessageDto message)
@@ -76,16 +81,18 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         };
     }
     
-    private static IRequest GetSellCarCommand(TelegramMessageDto message)
+    private async Task<IRequest> GetSellCarCommand(TelegramMessageDto message)
     {
+        await RemoveCache(message);
         return new SellCommand
         {
            ChatId = message.ChatId.ToString()
         };
     }
     
-    private static IRequest GetRemoveGroupCommand(TelegramMessageDto message)
+    private async Task<IRequest> GetRemoveGroupCommand(TelegramMessageDto message)
     {
+        await RemoveCache(message);
         return new RemoveGroupCommand
         {
             GroupId = message.ChatId,
@@ -93,8 +100,9 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         };
     }
 
-    private static IRequest GetAddGroupCommand(TelegramMessageDto message)
+    private async Task<IRequest> GetAddGroupCommand(TelegramMessageDto message)
     {
+        await RemoveCache(message);
         return new AddGroupCommand
         {
             GroupId = message.ChatId,
@@ -102,16 +110,18 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         };
     }
     
-    private static IRequest GetRegisterUserCommand(TelegramMessageDto message)
+    private async Task<IRequest> GetRegisterUserCommand(TelegramMessageDto message)
     {
+        await RemoveCache(message);
         return new StartCommand
         {
             ChatId = message.ChatId
         };
     }
     
-    private static IRequest GetContactConfirmedCommand(TelegramMessageDto message)
+    private async Task<IRequest> GetContactConfirmedCommand(TelegramMessageDto message)
     {
+        await RemoveCache(message);
         return new SharedPhoneCommand
         {
             ChatId = message.ChatId,
