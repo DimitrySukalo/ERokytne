@@ -31,13 +31,13 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
         if (user is null)
         {
             var phoneKeyboard = new ReplyKeyboardMarkup(
-                KeyboardButton.WithRequestContact("Поділитися номером телефону"))
+                KeyboardButton.WithRequestContact("Поділитися номером телефону ☎️"))
             {
                 ResizeKeyboard = true,
                 OneTimeKeyboard = true
             };
 
-            await _bot.SendTextMessageAsync(request.ChatId, "Підтвердіть номер за допомогою кнопки нижче",
+            await _bot.SendTextMessageAsync(request.ChatId, "Підтвердіть номер за допомогою кнопки нижче ⬇️",
                 replyMarkup: phoneKeyboard, cancellationToken: cancellationToken);
         }
         else
@@ -50,7 +50,7 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
                 ResizeKeyboard = true
             };
             
-            await _bot.SendTextMessageAsync(request.ChatId, "Ви уже зареєстровані"
+            await _bot.SendTextMessageAsync(request.ChatId, "Ви уже зареєстровані 👌"
                 ,replyMarkup: menu, cancellationToken: cancellationToken);
         }
         

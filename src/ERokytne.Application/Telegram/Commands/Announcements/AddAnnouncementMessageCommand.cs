@@ -64,7 +64,8 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
         };
 
         await _client.SendTextMessageAsync(request.ChatId!, 
-            "Текст успішно збережений. Можете добавити фото, опублікувати оголошення або відмінити процедуру створення.", 
+            "Текст успішно збережений ✅. Можете добавити фото, опублікувати оголошення або " +
+            "відмінити процедуру створення. Після добавлень фотографій оберіть дію нижче ⬇️", 
             replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;

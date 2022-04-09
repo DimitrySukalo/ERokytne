@@ -54,7 +54,7 @@ public class CancelAnnouncementCommandHandler : IRequestHandler<CancelAnnounceme
             ResizeKeyboard = true
         };
             
-        await _client.SendTextMessageAsync(request.ChatId!, "Оголошення успішно відмінено!"
+        await _client.SendTextMessageAsync(request.ChatId!, "Оголошення успішно відмінено! ✅"
             ,replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;

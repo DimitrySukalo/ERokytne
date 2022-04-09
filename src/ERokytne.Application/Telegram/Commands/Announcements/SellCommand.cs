@@ -57,7 +57,7 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
             ResizeKeyboard = true
         };
 
-        await _client.SendTextMessageAsync(request.ChatId!, "Введіть текст, який буде відображений у вашому оголошенні.",
+        await _client.SendTextMessageAsync(request.ChatId!, "Введіть текст, який буде відображений у вашому оголошенні 💬",
             replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;

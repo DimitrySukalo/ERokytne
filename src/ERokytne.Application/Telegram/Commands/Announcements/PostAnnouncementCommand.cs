@@ -51,29 +51,45 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
                                     .FirstOrDefaultAsync(e => e.IsConfirmed && e.Type == GroupType.Announcement, cancellationToken)
                                 ?? throw new ArgumentNullException("Announcement confirmed group is not found");
 
-        using (var photos = new StreamCollection())
+        if (announcement.Photos.Count > 0)
         {
+            using var photos = new StreamCollection();
             var media = new List<IAlbumInputMedia>();
             for (var i = 0; i < announcement.Photos.Count; i++)
             {
                 photos.Add(new MemoryStream());
-                await _client.GetInfoAndDownloadFileAsync(announcement.Photos[i].Path!, photos[i] , cancellationToken);
+                await _client.GetInfoAndDownloadFileAsync(announcement.Photos[i].Path!, photos[i],
+                    cancellationToken);
                 photos[i].Position = 0;
             }
 
-            media.AddRange(photos
-                .Select(photo => new InputMediaPhoto(new InputMedia(photo, Guid.NewGuid().ToString()))));
-            
-            if (media.Count > 0)
+            for (var i = 0; i < photos.Count; i++)
             {
-                await _client.SendMediaGroupAsync(announcementGroup.ExternalId!, media,
-                    cancellationToken: cancellationToken);
+                InputMediaPhoto photo;
+                if (i == 0)
+                {
+                    photo = new InputMediaPhoto(new InputMedia(photos[i], Guid.NewGuid().ToString()))
+                    {
+                        Caption = announcement.Text
+                    };
+                }
+                else
+                {
+                    photo = new InputMediaPhoto(new InputMedia(photos[i], Guid.NewGuid().ToString()));
+                }
+
+                media.Add(photo);
             }
+                
+            await _client.SendMediaGroupAsync(announcementGroup.ExternalId!, media,
+                cancellationToken: cancellationToken);
+        }
+        else
+        {
+            await _client.SendTextMessageAsync(announcementGroup.ExternalId!, announcement.Text!, 
+                cancellationToken: cancellationToken);
         }
         
-        await _client.SendTextMessageAsync(announcementGroup.ExternalId!, announcement.Text!, 
-            cancellationToken: cancellationToken);
-
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
         
         var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
@@ -84,7 +100,8 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
             ResizeKeyboard = true
         };
             
-        await _client.SendTextMessageAsync(request.ChatId!, "Оголошення успішно створено!"
+        await _client.SendTextMessageAsync(request.ChatId!, 
+            "Оголошення успішно створено! ✅ Тут ви можете переглядати свої та чужі оголошення: https://t.me/+Fxv4RYkSkD5lYjU6"
             ,replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;

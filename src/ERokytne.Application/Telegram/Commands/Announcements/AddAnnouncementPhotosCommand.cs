@@ -45,10 +45,6 @@ public class AddAnnouncementPhotosCommandHandler : IRequestHandler<AddAnnounceme
         });
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
-        await _client.SendTextMessageAsync(request.ChatId!, 
-            "Фото успішно збережені. Оберіть наступну дію нижче", cancellationToken: cancellationToken);
-        
         return Unit.Value;
     }
 }
