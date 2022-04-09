@@ -48,9 +48,17 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
                 PreviousCommand = BotConstants.Commands.SellCommand,
                 Id = announcement.Id
             });
+        
+        var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
+        {
+            new(BotConstants.Commands.CancelAnnouncement)
+        })
+        {
+            ResizeKeyboard = true
+        };
 
         await _client.SendTextMessageAsync(request.ChatId!, "Введіть текст, який буде відображений у вашому оголошенні.",
-            replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
+            replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;
     }
