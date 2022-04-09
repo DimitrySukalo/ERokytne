@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bot:
-    image: dimitrysukalo/erokytne
+    image: dimitrysukalo/erokytne:0.0.3
     container_name: erokytne-bot
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -10,59 +10,3 @@ services:
       General:AutoMigrations: "true"
     ports:
       - "5004:80"
-  
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2017-latest
-    container_name: udrive-sql
-    environment:
-      SA_PASSWORD: "0hTcshS1ubccRCXW"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1433:1433"
-    volumes:
-      - erokytne_sql_volume:/var/opt/mssql/data
-
-  redis:
-    image: "redis:alpine"
-    command: redis-server
-    ports:
-      - "6379:6379"
-    environment:
-      - REDIS_REPLICATION_MODE=master
-    volumes:
-      - erokytne_redis_volume:/data
-
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    environment:
-      - "REDIS_HOST=redis"
-      - "REDIS_PORT=6379"
-    ports:
-      - "8081:8081"
-    depends_on:
-      - redis
-
-  rabbitmq:
-    build:
-      context: ./rabbitmq
-      dockerfile: Dockerfile
-    container_name: udrive-rabbitmq
-    hostname: udrive-rabbitmq
-    environment:
-      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
-      RABBITMQ_DEFAULT_USER: "admin"
-      RABBITMQ_DEFAULT_PASS: "ZpeNu24ext7M8DmG"
-      RABBITMQ_DEFAULT_VHOST: "/"
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    volumes:
-      - erokytne_rabbitmq_volume:/var/lib/rabbitmq
-
-volumes:
-  erokytne_sql_volume:
-    driver: local
-  erokytne_redis_volume:
-    driver: local
-  erokytne_rabbitmq_volume:
-    driver: local
