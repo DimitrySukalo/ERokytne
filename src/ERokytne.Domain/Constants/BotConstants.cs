@@ -12,8 +12,7 @@ public static class BotConstants
         public const string StartCommand = "/start";
         public const string SellCommand = "Продати свою річ 📑";
         public const string AnnouncementEnteredText = "/announcemententeredtext";
-        public const string AnnouncementUploadedPhoto = "/announcementuploadedphoto";
-        public const string PostAnnouncement = "Опублікувати оголошення";
-        public const string CancelAnnouncement = "Відмінити оголошення";
+        public const string PostAnnouncement = "Опублікувати оголошення 📨";
+        public const string CancelAnnouncement = "Відмінити оголошення ❌";
     }
 }
