@@ -42,7 +42,7 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
         }
         else
         {
-            await _bot.SendTextMessageAsync(request.ChatId, "Ви уже зареєстровані 👌"
+            await _bot.SendTextMessageAsync(request.ChatId, "Ваше меню дій нижче 👇"
                 ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
         }
         

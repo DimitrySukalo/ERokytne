@@ -1,6 +1,7 @@
 using ERokytne.Application.Cache;
 using ERokytne.Application.Telegram.Commands;
 using ERokytne.Application.Telegram.Commands.Announcements;
+using ERokytne.Application.Telegram.Commands.Support.Commands;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using MediatR;
@@ -18,13 +19,14 @@ public static class UserCommandHelper
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{message.ChatId}",
                 () => Task.FromResult(new AnnouncementCacheModel()));
 
-        if (!string.IsNullOrWhiteSpace(lastCommand.PreviousCommand) && lastCommand.Id is not null)
+        if (!string.IsNullOrWhiteSpace(lastCommand.PreviousCommand))
         {
             return lastCommand.PreviousCommand switch
             {
                 BotConstants.Commands.SellCommand => GetAddAnnouncementMessageCommand(message, lastCommand.Id),
                 BotConstants.Commands.AnnouncementEnteredText when message.Type is MessageType.Photo or MessageType.Document
                     => GetAddAnnouncementPhotosCommand(message, lastCommand.Id),
+                BotConstants.Commands.SupportCommand => GetCreateSupportMessageCommand(message),
                 _ => null
             };
         }
@@ -37,13 +39,29 @@ public static class UserCommandHelper
 
     public static ReplyKeyboardMarkup GetStartMenu()
     {
-        return new ReplyKeyboardMarkup(new List<KeyboardButton>
+        return new ReplyKeyboardMarkup(new List<IEnumerable<KeyboardButton>>
         {
-            new(BotConstants.Commands.SellCommand),
-            new(BotConstants.Commands.MyAnnouncementsCommand)
+            new List<KeyboardButton>
+            {
+                new(BotConstants.Commands.SellCommand),
+                new(BotConstants.Commands.MyAnnouncementsCommand)
+            },
+            new List<KeyboardButton>
+            {
+                new(BotConstants.Commands.SupportCommand)
+            }
         })
         {
             ResizeKeyboard = true
+        };
+    }
+
+    private static IBaseRequest GetCreateSupportMessageCommand(TelegramMessageDto messageDto)
+    {
+        return new SaveSupportMessageCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            Text = messageDto.Text
         };
     }
 

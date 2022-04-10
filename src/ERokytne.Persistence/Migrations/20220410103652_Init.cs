@@ -211,6 +211,26 @@ namespace ERokytne.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SupportMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
+                    TelegramUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupportMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SupportMessages_TelegramUsers_TelegramUserId",
+                        column: x => x.TelegramUserId,
+                        principalTable: "TelegramUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
                 {
@@ -279,6 +299,11 @@ namespace ERokytne.Persistence.Migrations
                 name: "IX_Photos_AnnouncementId",
                 table: "Photos",
                 column: "AnnouncementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SupportMessages_TelegramUserId",
+                table: "SupportMessages",
+                column: "TelegramUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -303,6 +328,9 @@ namespace ERokytne.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "SupportMessages");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

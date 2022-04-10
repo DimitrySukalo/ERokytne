@@ -1,4 +1,5 @@
 using ERokytne.Domain.Entities;
+using ERokytne.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,5 +20,7 @@ public class TelegramUserEntityTypeConfiguration : IEntityTypeConfiguration<Tele
 
         builder.HasMany(e => e.Announcements).WithOne(e => e.TelegramUser)
             .HasForeignKey(e => e.TelegramUserId);
+        
+        builder.AddTrackEntityConfiguration();
     }
 }

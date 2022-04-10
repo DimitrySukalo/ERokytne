@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ERokytne.Persistence.Configurations;
 
-public class AnnouncementEntityTypeConfiguration : IEntityTypeConfiguration<Announcement>
+public class SupportMessageEntityTypeConfiguration : IEntityTypeConfiguration<SupportMessage>
 {
-    public void Configure(EntityTypeBuilder<Announcement> builder)
+    public void Configure(EntityTypeBuilder<SupportMessage> builder)
     {
-        builder.ToTable("Announcements");
         builder.HasKey(e => e.Id);
+        builder.ToTable("SupportMessages");
 
         builder.Property(e => e.Text).HasMaxLength(5000);
-        builder.HasMany(e => e.Photos).WithOne(e => e.Announcement)
-            .HasForeignKey(e => e.AnnouncementId);
+        builder.HasOne(e => e.TelegramUser).WithMany(e => e.SupportMessages)
+            .HasForeignKey(e => e.TelegramUserId);
         
         builder.AddTrackEntityConfiguration();
     }

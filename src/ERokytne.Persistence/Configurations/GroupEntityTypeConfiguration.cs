@@ -1,4 +1,5 @@
 using ERokytne.Domain.Entities;
+using ERokytne.Persistence.Extensions;
 using ERokytne.Persistence.ValueComparers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,6 +15,7 @@ public class GroupEntityTypeConfiguration : IEntityTypeConfiguration<Group>
 
         builder.Property(e => e.Type).HasConversion<string>().HasMaxLength(50);
         builder.Property(e => e.ExternalId).HasMaxLength(500);
-        builder.Property(e => e.CreatedOn).HasConversion(new DateTimeValueConverter());
+        
+        builder.AddTrackEntityConfiguration();
     }
 }

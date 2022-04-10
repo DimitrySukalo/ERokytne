@@ -11,6 +11,7 @@ public static class BotConstants
     {
         public const string StartCommand = "/start";
         public const string SellCommand = "Зробити оголошення 📑";
+        public const string SupportCommand = "Підтримка 🙌";
         public const string MyAnnouncementsCommand = "Мої оголошення 💻";
         public const string AnnouncementEnteredText = "/announcemententeredtext";
         public const string PostAnnouncement = "Опублікувати оголошення 📨";

@@ -3,6 +3,8 @@ using ERokytne.Application.Helpers;
 using ERokytne.Application.Telegram.Commands.Announcements;
 using ERokytne.Application.Telegram.Commands.Groups;
 using ERokytne.Application.Telegram.Commands.Registrations;
+using ERokytne.Application.Telegram.Commands.Support;
+using ERokytne.Application.Telegram.Commands.Support.Commands;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Telegram.Contracts;
@@ -41,6 +43,8 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 await GetCancelAnnouncementCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.MyAnnouncementsCommand) =>
                 await GetMyAnnouncementsCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.SupportCommand) =>
+                await GetSupportCommand(message),
             MessageType.Contact => await GetContactConfirmedCommand(message),
             MessageType.ChatMembersAdded => await GetAddGroupCommand(message),
             MessageType.ChatMemberLeft => await GetRemoveGroupCommand(message),
@@ -55,6 +59,15 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     private async Task RemoveCache(TelegramMessageDto messageDto)
     {
         await _service.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}");
+    }
+
+    private async Task<IBaseRequest> GetSupportCommand(TelegramMessageDto messageDto)
+    {
+        await RemoveCache(messageDto);
+        return new SupportCommand
+        {
+            ChatId = messageDto.ChatId.ToString()
+        };
     }
 
     private async Task<IBaseRequest> GetMyAnnouncementsCommand(TelegramMessageDto message)
