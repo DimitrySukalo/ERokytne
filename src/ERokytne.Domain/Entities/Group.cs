@@ -10,7 +10,9 @@ public class Group : IEntity<Guid>
     public string? ExternalId { get; set; }
     
     public GroupType Type { get; set; }
-    
+
+    public List<Announcement> Announcements { get; set; } = new();
+
     public bool IsConfirmed { get; set; }
     
     public DateTime CreatedOn { get; set; }

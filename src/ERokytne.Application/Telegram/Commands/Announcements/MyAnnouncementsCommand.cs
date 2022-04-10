@@ -40,13 +40,21 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
                        .FirstOrDefaultAsync(e => e.ChatId == request.ChatId && !e.IsRemoved, cancellationToken)
                    ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
 
-        var announcements = _dbContext.Announcements.Where(e => e.TelegramUserId == user.Id);
+        var announcements = _dbContext.Announcements.Where(e => e.TelegramUserId == user.Id
+         && !e.IsRemoved);
         var paginatedAnnouncements = await PaginatedList<Announcement>.CreateAsync(announcements,
             request.PageIndex, 5);
+
+        if (paginatedAnnouncements.Count == 0 && paginatedAnnouncements.HasPreviousPage)
+        {
+            request.PageIndex -= 1;
+            paginatedAnnouncements = await PaginatedList<Announcement>.CreateAsync(announcements,
+                request.PageIndex, 5);
+        }
         
         if (paginatedAnnouncements.Any())
         {
-            var counter = request.PageIndex == 1 ? 0 : 5 * request.PageIndex;
+            var counter = request.PageIndex == 1 ? 0 : 5 * request.PageIndex - 5;
             var keys = new List<List<InlineKeyboardButton>>();
             foreach (var announcement in paginatedAnnouncements)
             {
@@ -83,7 +91,7 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
             keys.Add(pagingKeys);
             int? messageId;
             
-            if (request.PageIndex > 1 && request.MessageId.HasValue)
+            if (request.PageIndex > 1 || request.MessageId.HasValue)
             {
                 var parsedMessageId = int.Parse(request.MessageId.ToString()!);
                 await RewriteMessage(request.ChatId, keys, parsedMessageId, cancellationToken);
@@ -105,6 +113,7 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
         }
         else
         {
+            await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
             await _client.SendTextMessageAsync(request.ChatId!, "У вас немає оголошень 😿",
                 cancellationToken: cancellationToken);
         }
@@ -125,7 +134,7 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
     private async Task RewriteMessage(string? chatId, IEnumerable<List<InlineKeyboardButton>> keys, int messageId,
         CancellationToken cancellationToken)
     {
-        await _client.EditMessageReplyMarkupAsync(chatId!, messageId, new InlineKeyboardMarkup(keys),
-            cancellationToken);
+        await _client.EditMessageTextAsync(chatId!, messageId, "Оберіть оголошення 📑"
+            ,replyMarkup: new InlineKeyboardMarkup(keys), cancellationToken: cancellationToken);
     }
 }

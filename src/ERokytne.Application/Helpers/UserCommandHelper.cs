@@ -27,6 +27,8 @@ public static class UserCommandHelper
                 BotConstants.Commands.AnnouncementEnteredText when message.Type is MessageType.Photo or MessageType.Document
                     => GetAddAnnouncementPhotosCommand(message, lastCommand.Id),
                 BotConstants.Commands.SupportCommand => GetCreateSupportMessageCommand(message),
+                BotConstants.Commands.MyAnnouncementsCommand => GetOpenAnnouncementCommand(message, lastCommand.MessageId),
+                BotConstants.Commands.OpenAnnouncementCommand => GetDeleteAnnouncementCommand(message, lastCommand.MessageId),
                 _ => null
             };
         }
@@ -34,6 +36,28 @@ public static class UserCommandHelper
         return new NotFoundCommand
         {
             ChatId = message.ChatId
+        };
+    }
+
+    private static IBaseRequest GetDeleteAnnouncementCommand(TelegramMessageDto messageDto, int? messageId)
+    {
+        var id = int.Parse(messageId.ToString()!);
+        return new DeleteAnnouncementCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            Id = Guid.Parse(messageDto.Text!),
+            MessageId = id
+        };
+    }
+    
+    private static IBaseRequest GetOpenAnnouncementCommand(TelegramMessageDto messageDto, int? messageId)
+    {
+        var id = int.Parse(messageId.ToString()!);
+        return new OpenAnnouncementCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            Id = Guid.Parse(messageDto.Text!),
+            MessageId = id
         };
     }
 

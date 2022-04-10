@@ -13,6 +13,14 @@ public class Announcement : IEntity<Guid>
     public Guid TelegramUserId { get; set; }
     
     public TelegramUser TelegramUser { get; set; }
+    
+    public int? ExternalId { get; set; }
+    
+    public Guid? GroupId { get; set; }
+    
+    public Group? Group { get; set; }
+    
+    public bool IsRemoved { get; set; }
 
     public DateTime CreatedOn { get; set; }
     

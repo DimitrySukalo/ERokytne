@@ -55,10 +55,25 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 await GetNextAnnouncementListCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.PreviousAnnouncementsList) => 
                 await GetPreviousAnnouncementListCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.CurrentAnnouncementsList) => 
+                await GetCurrentAnnouncementListCommand(message),
             _ => await UserCommandHelper.SearchCommand(_service, message)
         };
     }
     
+    private async Task<IBaseRequest> GetCurrentAnnouncementListCommand(TelegramMessageDto messageDto)
+    {
+        var lastCommand = await _service
+            .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}",
+                () => Task.FromResult(new AnnouncementCacheModel()));
+        
+        return new MyAnnouncementsCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            PageIndex = lastCommand.PageIndex!.Value,
+            MessageId = lastCommand.MessageId
+        };
+    }
     
     private async Task<IBaseRequest> GetPreviousAnnouncementListCommand(TelegramMessageDto messageDto)
     {
