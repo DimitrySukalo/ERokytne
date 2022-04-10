@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bot:
-    image: erokytne/bot:0.0.13
+    image: erokytne/bot:0.0.14
     container_name: erokytne-bot
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
