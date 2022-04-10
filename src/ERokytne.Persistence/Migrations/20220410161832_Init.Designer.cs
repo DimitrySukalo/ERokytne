@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ERokytne.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220409160320_Init")]
+    [Migration("20220410161832_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,6 +110,15 @@ namespace ERokytne.Persistence.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ExternalId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsRemoved")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("TelegramUserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -121,6 +130,8 @@ namespace ERokytne.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("TelegramUserId");
 
@@ -185,6 +196,32 @@ namespace ERokytne.Persistence.Migrations
                     b.HasIndex("AnnouncementId");
 
                     b.ToTable("Photos", (string)null);
+                });
+
+            modelBuilder.Entity("ERokytne.Domain.Entities.SupportMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("TelegramUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TelegramUserId");
+
+                    b.ToTable("SupportMessages", (string)null);
                 });
 
             modelBuilder.Entity("ERokytne.Domain.Entities.TelegramUser", b =>
@@ -363,11 +400,17 @@ namespace ERokytne.Persistence.Migrations
 
             modelBuilder.Entity("ERokytne.Domain.Entities.Announcement", b =>
                 {
+                    b.HasOne("ERokytne.Domain.Entities.Group", "Group")
+                        .WithMany("Announcements")
+                        .HasForeignKey("GroupId");
+
                     b.HasOne("ERokytne.Domain.Entities.TelegramUser", "TelegramUser")
                         .WithMany("Announcements")
                         .HasForeignKey("TelegramUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
 
                     b.Navigation("TelegramUser");
                 });
@@ -379,6 +422,15 @@ namespace ERokytne.Persistence.Migrations
                         .HasForeignKey("AnnouncementId");
 
                     b.Navigation("Announcement");
+                });
+
+            modelBuilder.Entity("ERokytne.Domain.Entities.SupportMessage", b =>
+                {
+                    b.HasOne("ERokytne.Domain.Entities.TelegramUser", "TelegramUser")
+                        .WithMany("SupportMessages")
+                        .HasForeignKey("TelegramUserId");
+
+                    b.Navigation("TelegramUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -437,9 +489,16 @@ namespace ERokytne.Persistence.Migrations
                     b.Navigation("Photos");
                 });
 
+            modelBuilder.Entity("ERokytne.Domain.Entities.Group", b =>
+                {
+                    b.Navigation("Announcements");
+                });
+
             modelBuilder.Entity("ERokytne.Domain.Entities.TelegramUser", b =>
                 {
                     b.Navigation("Announcements");
+
+                    b.Navigation("SupportMessages");
                 });
 #pragma warning restore 612, 618
         }

@@ -196,6 +196,9 @@ namespace ERokytne.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
                     TelegramUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExternalId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsRemoved = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -203,11 +206,36 @@ namespace ERokytne.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Announcements", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Announcements_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Announcements_TelegramUsers_TelegramUserId",
                         column: x => x.TelegramUserId,
                         principalTable: "TelegramUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SupportMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
+                    TelegramUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupportMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SupportMessages_TelegramUsers_TelegramUserId",
+                        column: x => x.TelegramUserId,
+                        principalTable: "TelegramUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -242,6 +270,11 @@ namespace ERokytne.Persistence.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Announcements_GroupId",
+                table: "Announcements",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Announcements_TelegramUserId",
@@ -279,6 +312,11 @@ namespace ERokytne.Persistence.Migrations
                 name: "IX_Photos_AnnouncementId",
                 table: "Photos",
                 column: "AnnouncementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SupportMessages_TelegramUserId",
+                table: "SupportMessages",
+                column: "TelegramUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -299,10 +337,10 @@ namespace ERokytne.Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Groups");
+                name: "Photos");
 
             migrationBuilder.DropTable(
-                name: "Photos");
+                name: "SupportMessages");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -312,6 +350,9 @@ namespace ERokytne.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Announcements");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "TelegramUsers");

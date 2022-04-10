@@ -19,6 +19,8 @@ public class TelegramUser : IEntity<Guid>
 
     public List<Announcement> Announcements { get; set; } = new();
 
+    public List<SupportMessage> SupportMessages { get; set; } = new();
+
     public bool IsRemoved { get; set; }
     
     public DateTime CreatedOn { get; set; }

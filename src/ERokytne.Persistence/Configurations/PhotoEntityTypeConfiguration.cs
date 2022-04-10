@@ -1,4 +1,5 @@
 using ERokytne.Domain.Entities;
+using ERokytne.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,5 +14,7 @@ public class PhotoEntityTypeConfiguration : IEntityTypeConfiguration<Photo>
 
         builder.Property(e => e.Path).HasMaxLength(500);
         builder.Property(e => e.Type).HasConversion<string>().HasMaxLength(50);
+        
+        builder.AddTrackEntityConfiguration();
     }
 }

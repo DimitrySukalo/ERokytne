@@ -3,6 +3,7 @@ using ERokytne.Application.Helpers;
 using ERokytne.Application.Telegram.Commands.Announcements;
 using ERokytne.Application.Telegram.Commands.Groups;
 using ERokytne.Application.Telegram.Commands.Registrations;
+using ERokytne.Application.Telegram.Commands.Support.Commands;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Telegram.Contracts;
@@ -41,6 +42,8 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 await GetCancelAnnouncementCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.MyAnnouncementsCommand) =>
                 await GetMyAnnouncementsCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.SupportCommand) =>
+                await GetSupportCommand(message),
             MessageType.Contact => await GetContactConfirmedCommand(message),
             MessageType.ChatMembersAdded => await GetAddGroupCommand(message),
             MessageType.ChatMemberLeft => await GetRemoveGroupCommand(message),
@@ -48,7 +51,55 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 await GetSellCarCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.PostAnnouncement) =>
                 await GetPostAnnouncementCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.NextAnnouncementsList) => 
+                await GetNextAnnouncementListCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.PreviousAnnouncementsList) => 
+                await GetPreviousAnnouncementListCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.CurrentAnnouncementsList) => 
+                await GetCurrentAnnouncementListCommand(message),
             _ => await UserCommandHelper.SearchCommand(_service, message)
+        };
+    }
+    
+    private async Task<IBaseRequest> GetCurrentAnnouncementListCommand(TelegramMessageDto messageDto)
+    {
+        var lastCommand = await _service
+            .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}",
+                () => Task.FromResult(new AnnouncementCacheModel()));
+        
+        return new MyAnnouncementsCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            PageIndex = lastCommand.PageIndex!.Value,
+            MessageId = lastCommand.MessageId
+        };
+    }
+    
+    private async Task<IBaseRequest> GetPreviousAnnouncementListCommand(TelegramMessageDto messageDto)
+    {
+        var lastCommand = await _service
+            .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}",
+                () => Task.FromResult(new AnnouncementCacheModel()));
+        
+        return new MyAnnouncementsCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            PageIndex = lastCommand.PageIndex!.Value - 1,
+            MessageId = lastCommand.MessageId
+        };
+    }
+    
+    private async Task<IBaseRequest> GetNextAnnouncementListCommand(TelegramMessageDto messageDto)
+    {
+        var lastCommand = await _service
+            .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}",
+                () => Task.FromResult(new AnnouncementCacheModel()));
+        
+        return new MyAnnouncementsCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            PageIndex = lastCommand.PageIndex!.Value + 1,
+            MessageId = lastCommand.MessageId
         };
     }
 
@@ -57,12 +108,22 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         await _service.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}");
     }
 
+    private async Task<IBaseRequest> GetSupportCommand(TelegramMessageDto messageDto)
+    {
+        await RemoveCache(messageDto);
+        return new SupportCommand
+        {
+            ChatId = messageDto.ChatId.ToString()
+        };
+    }
+
     private async Task<IBaseRequest> GetMyAnnouncementsCommand(TelegramMessageDto message)
     {
         await RemoveCache(message);
         return new MyAnnouncementsCommand
         {
-            ChatId = message.ChatId.ToString()
+            ChatId = message.ChatId.ToString(),
+            PageIndex = 1
         };
     }
     

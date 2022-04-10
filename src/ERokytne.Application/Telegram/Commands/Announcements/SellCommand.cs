@@ -37,7 +37,7 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
             .FirstOrDefaultAsync(e => e.ChatId == request.ChatId && !e.IsRemoved, cancellationToken)
                    ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
 
-        if (user.Announcements.Count(e => e.CreatedOn.Date == DateTime.UtcNow.Date) >= 3 && 
+        if (user.Announcements.Count(e => e.CreatedOn.Date == DateTime.UtcNow.Date && !e.IsRemoved) >= 3 && 
             user.Type == TelegramUserType.User)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
@@ -50,7 +50,8 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
         user.NickName = $"@{request.NickName}";
         var announcement = new Announcement
         {
-            TelegramUserId = user.Id
+            TelegramUserId = user.Id,
+            IsRemoved = false
         };
 
         await _dbContext.Announcements.AddAsync(announcement, cancellationToken);

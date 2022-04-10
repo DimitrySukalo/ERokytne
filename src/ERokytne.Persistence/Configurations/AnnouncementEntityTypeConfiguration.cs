@@ -1,4 +1,5 @@
 using ERokytne.Domain.Entities;
+using ERokytne.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,5 +15,9 @@ public class AnnouncementEntityTypeConfiguration : IEntityTypeConfiguration<Anno
         builder.Property(e => e.Text).HasMaxLength(5000);
         builder.HasMany(e => e.Photos).WithOne(e => e.Announcement)
             .HasForeignKey(e => e.AnnouncementId);
+        builder.HasOne(e => e.Group).WithMany(e => e.Announcements)
+            .HasForeignKey(e => e.GroupId);
+        
+        builder.AddTrackEntityConfiguration();
     }
 }

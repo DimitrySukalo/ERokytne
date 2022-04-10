@@ -7,7 +7,6 @@ using ERokytne.Domain.Enums;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -25,15 +24,13 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
     private readonly ApplicationDbContext _dbContext;
     private readonly UserActionService _actionService;
     private readonly ITelegramBotClient _client;
-    private readonly ILogger<PostAnnouncementCommandHandler> _logger;
 
     public PostAnnouncementCommandHandler(ApplicationDbContext dbContext, UserActionService actionService, 
-        ITelegramBotClient client, ILogger<PostAnnouncementCommandHandler> logger)
+        ITelegramBotClient client)
     {
         _dbContext = dbContext;
         _actionService = actionService;
         _client = client;
-        _logger = logger;
     }
 
     public async Task<Unit> Handle(PostAnnouncementCommand request, CancellationToken cancellationToken)
@@ -43,12 +40,12 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
                    ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
 
         var announcement =
-            await _dbContext.Announcements.AsNoTracking().Include(e => e.Photos
+            await _dbContext.Announcements.Include(e => e.Photos
             ).FirstOrDefaultAsync(e => e.Id == request.AnnouncementId && e.TelegramUserId == user.Id,
                 cancellationToken) ?? 
             throw new ArgumentNullException($"Announcement with id {request.AnnouncementId} is not found");
         
-        var announcementGroup = await _dbContext.Groups.AsNoTracking()
+        var announcementGroup = await _dbContext.Groups
                                     .FirstOrDefaultAsync(e => e.IsConfirmed && e.Type == GroupType.Announcement, cancellationToken)
                                 ?? throw new ArgumentNullException("Announcement confirmed group is not found");
         
@@ -58,7 +55,8 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         var text = new StringBuilder();
         text.Append($"{announcement.Text}\n");
         text.Append($"Користувач: {postIdentification}");
-        
+
+        var externalId = 0;
         if (announcement.Photos.Count > 0)
         {
             using var photos = new StreamCollection();
@@ -89,17 +87,24 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
                 media.Add(photo);
             }
                 
-            await _client.SendMediaGroupAsync(announcementGroup.ExternalId!, media,
+            var messages = await _client.SendMediaGroupAsync(announcementGroup.ExternalId!, media,
                 cancellationToken: cancellationToken);
+
+            externalId = messages.FirstOrDefault()!.MessageId;
         }
         else
         {
-            await _client.SendTextMessageAsync(announcementGroup.ExternalId!, text.ToString(), 
+            var message = await _client.SendTextMessageAsync(announcementGroup.ExternalId!, text.ToString(), 
                 cancellationToken: cancellationToken);
+
+            externalId = message.MessageId;
         }
+
+        announcement.ExternalId = externalId;
+        announcement.GroupId = announcementGroup.Id;
+        await _dbContext.SaveChangesAsync(cancellationToken);
         
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
-
         await _client.SendTextMessageAsync(request.ChatId!, 
             "Оголошення успішно створено! ✅ Тут ви можете переглядати свої та чужі оголошення: https://t.me/+Fxv4RYkSkD5lYjU6"
             ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
