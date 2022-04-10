@@ -1,8 +1,10 @@
+using ERokytne.Api.Services;
 using ERokytne.Application.Cache;
 using ERokytne.Application.Telegram.Commands;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -25,6 +27,7 @@ public static class ServicesExtension
         services.AddRedis(configuration);
         services.AddMediatR(typeof(NotFoundCommand).Assembly);
         services.AddScoped<UserActionService>();
+        services.AddScoped<IEmailSender, FakeEmailSender>();
 
     }
 
