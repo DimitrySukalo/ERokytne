@@ -22,9 +22,9 @@ public static class UserCommandHelper
         {
             return lastCommand.PreviousCommand switch
             {
-                BotConstants.Commands.SellCommand => GetAddCarMessageCommand(message, lastCommand.Id),
+                BotConstants.Commands.SellCommand => GetAddAnnouncementMessageCommand(message, lastCommand.Id),
                 BotConstants.Commands.AnnouncementEnteredText when message.Type is MessageType.Photo or MessageType.Document
-                    => GetAddCarPhotosCommand(message, lastCommand.Id),
+                    => GetAddAnnouncementPhotosCommand(message, lastCommand.Id),
                 _ => null
             };
         }
@@ -47,17 +47,18 @@ public static class UserCommandHelper
         };
     }
 
-    private static IBaseRequest GetAddCarPhotosCommand(TelegramMessageDto messageDto, Guid? announcementId)
+    private static IBaseRequest GetAddAnnouncementPhotosCommand(TelegramMessageDto messageDto, Guid? announcementId)
     {
         return new AddAnnouncementPhotosCommand
         {
             ChatId = messageDto.ChatId.ToString(),
             AnnouncementId = announcementId,
-            FileId = messageDto.FileId
+            FileId = messageDto.FileId,
+            MessageType = messageDto.Type
         };
     }
     
-    private static IBaseRequest GetAddCarMessageCommand(TelegramMessageDto messageDto, Guid? announcementId)
+    private static IBaseRequest GetAddAnnouncementMessageCommand(TelegramMessageDto messageDto, Guid? announcementId)
     {
         return new AddAnnouncementMessageCommand
         {

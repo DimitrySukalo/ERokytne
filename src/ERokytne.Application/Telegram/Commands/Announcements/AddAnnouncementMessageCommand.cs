@@ -38,6 +38,14 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
                        .FirstOrDefaultAsync(e => e.ChatId == request.ChatId && !e.IsRemoved, cancellationToken)
                    ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
 
+        if (request.Text?.Length > 5000)
+        {
+            await _client.SendTextMessageAsync(request.ChatId!,
+                "Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ) ☝️",
+                cancellationToken: cancellationToken);
+            return Unit.Value;
+        }
+
         var announcement =
             await _dbContext.Announcements.FirstOrDefaultAsync(e => 
                     e.Id == request.AnnouncementId && e.TelegramUserId == user.Id,

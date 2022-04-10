@@ -3,6 +3,7 @@ using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace ERokytne.Application.Telegram.Commands.Announcements;
 
@@ -13,6 +14,8 @@ public class AddAnnouncementPhotosCommand : IRequest
     public Guid? AnnouncementId { get; set; }
     
     public string? FileId { get; set; }
+    
+    public MessageType MessageType { get; set; }
 }
 
 public class AddAnnouncementPhotosCommandHandler : IRequestHandler<AddAnnouncementPhotosCommand>
@@ -31,6 +34,13 @@ public class AddAnnouncementPhotosCommandHandler : IRequestHandler<AddAnnounceme
         var user = await _dbContext.TelegramUsers
                        .FirstOrDefaultAsync(e => e.ChatId == request.ChatId && !e.IsRemoved, cancellationToken)
                    ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
+
+        if (request.MessageType == MessageType.Document)
+        {
+            await _client.SendTextMessageAsync(request.ChatId!, "Відправляйте будь ласка фото, а не документ ⚠️", 
+                cancellationToken: cancellationToken);
+            return Unit.Value;
+        }
 
         var announcement =
             await _dbContext.Announcements.FirstOrDefaultAsync(e => 
