@@ -11,27 +11,27 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ERokytne.Application.Telegram.Commands.Announcements;
 
-public class SellCommand : IRequest
+public class CreateAnnouncement : IRequest
 {
     public string? ChatId { get; set; }
     
     public string? NickName { get; set; }
 }
 
-public class SellCommandHandler : IRequestHandler<SellCommand>
+public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly UserActionService _actionService;
     private readonly ITelegramBotClient _client;
 
-    public SellCommandHandler(ApplicationDbContext dbContext, UserActionService actionService, ITelegramBotClient client)
+    public CreateAnnouncementHandler(ApplicationDbContext dbContext, UserActionService actionService, ITelegramBotClient client)
     {
         _dbContext = dbContext;
         _actionService = actionService;
         _client = client;
     }
 
-    public async Task<Unit> Handle(SellCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(CreateAnnouncement request, CancellationToken cancellationToken)
     {
         var user = await _dbContext.TelegramUsers.Include(e => e.Announcements)
             .FirstOrDefaultAsync(e => e.ChatId == request.ChatId && !e.IsRemoved, cancellationToken)
@@ -41,7 +41,8 @@ public class SellCommandHandler : IRequestHandler<SellCommand>
             user.Type == TelegramUserType.User)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
-                "Ви витратили ліміт оголошень на сьогодні 😿",
+                "Ви витратили ліміт оголошень на сьогодні 😿. " +
+                "Можете почекати до завтра або видалити одне з ваших попередніх оголошень, яке було створено сьогодні ☝️",
                 cancellationToken: cancellationToken);
             
             return Unit.Value;

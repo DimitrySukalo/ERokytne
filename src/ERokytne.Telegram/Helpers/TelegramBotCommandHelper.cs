@@ -156,7 +156,7 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     private async Task<IRequest> GetSellCarCommand(TelegramMessageDto message)
     {
         await RemoveCache(message);
-        return new SellCommand
+        return new CreateAnnouncement
         {
            ChatId = message.ChatId.ToString(),
            NickName = message.UserDto.NickName
