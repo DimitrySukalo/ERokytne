@@ -41,7 +41,7 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
         if (request.Text?.Length > 5000)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
-                "Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ) ☝️",
+                "☝️ Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ).",
                 cancellationToken: cancellationToken);
             return Unit.Value;
         }

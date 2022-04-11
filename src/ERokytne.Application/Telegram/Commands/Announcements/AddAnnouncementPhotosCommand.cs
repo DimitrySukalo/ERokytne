@@ -37,7 +37,7 @@ public class AddAnnouncementPhotosCommandHandler : IRequestHandler<AddAnnounceme
 
         if (request.MessageType == MessageType.Document)
         {
-            await _client.SendTextMessageAsync(request.ChatId!, "Відправляйте будь ласка фото, а не документ ⚠️", 
+            await _client.SendTextMessageAsync(request.ChatId!, "⚠️ Відправляйте будь ласка фото, а не документ", 
                 cancellationToken: cancellationToken);
             return Unit.Value;
         }
