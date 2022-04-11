@@ -4,6 +4,7 @@ using ERokytne.Application.Telegram.Commands.Announcements;
 using ERokytne.Application.Telegram.Commands.Groups;
 using ERokytne.Application.Telegram.Commands.Registrations;
 using ERokytne.Application.Telegram.Commands.Support.Commands;
+using ERokytne.Application.Telegram.Commands.User.Commands;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Telegram.Contracts;
@@ -18,16 +19,24 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
 {
     private readonly ITelegramBotClient _bot;
     private readonly UserActionService _service;
+    private readonly IMediator _mediator;
 
-    public TelegramBotCommandHelper(ITelegramBotClient bot, UserActionService service)
+    public TelegramBotCommandHelper(ITelegramBotClient bot, UserActionService service, IMediator mediator)
     {
         _bot = bot;
         _service = service;
+        _mediator = mediator;
     }
 
     public async Task<IBaseRequest?> FindCommand(Update update)
     {
         var message = GetMessageDto(update, _bot);
+        await _mediator.Send(new UpdateUserDataCommand
+        {
+            ChatId = message.ChatId.ToString(),
+            FullName = $"{message.UserDto.FirstName} {message.UserDto.LastName}",
+            NickName = $"@{message.UserDto.NickName}"
+        });
         
         if (string.IsNullOrWhiteSpace(message.Text))
         {
@@ -158,8 +167,7 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         await RemoveCache(message);
         return new CreateAnnouncement
         {
-           ChatId = message.ChatId.ToString(),
-           NickName = message.UserDto.NickName
+           ChatId = message.ChatId.ToString()
         };
     }
     
@@ -198,7 +206,9 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
         return new SharedPhoneCommand
         {
             ChatId = message.ChatId,
-            Phone = message.Text!
+            Phone = message.Text!,
+            FullName = $"{message.UserDto.FirstName} {message.UserDto.LastName}",
+            NickName = $"@{message.UserDto.NickName}"
         };
     }
 
@@ -245,6 +255,7 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 {
                     FirstName = update.Message.Contact?.FirstName,
                     LastName = update.Message.Contact?.LastName,
+                    NickName = $"@{update.Message.From?.Username}"
                 },
                 Type = update.Message.Type
             };

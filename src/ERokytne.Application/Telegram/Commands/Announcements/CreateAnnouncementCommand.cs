@@ -14,8 +14,6 @@ namespace ERokytne.Application.Telegram.Commands.Announcements;
 public class CreateAnnouncement : IRequest
 {
     public string? ChatId { get; set; }
-    
-    public string? NickName { get; set; }
 }
 
 public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
@@ -48,7 +46,6 @@ public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
             return Unit.Value;
         }
         
-        user.NickName = $"@{request.NickName}";
         var announcement = new Announcement
         {
             TelegramUserId = user.Id,
