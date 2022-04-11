@@ -56,7 +56,7 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         text.Append($"{announcement.Text}\n");
         text.Append($"Користувач: {postIdentification}");
 
-        var externalId = 0;
+        var externalIds = new List<int>();
         if (announcement.Photos.Count > 0)
         {
             using var photos = new StreamCollection();
@@ -90,17 +90,17 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
             var messages = await _client.SendMediaGroupAsync(announcementGroup.ExternalId!, media,
                 cancellationToken: cancellationToken);
 
-            externalId = messages.FirstOrDefault()!.MessageId;
+            externalIds.AddRange(messages.Select(e => e.MessageId));
         }
         else
         {
             var message = await _client.SendTextMessageAsync(announcementGroup.ExternalId!, text.ToString(), 
                 cancellationToken: cancellationToken);
 
-            externalId = message.MessageId;
+            externalIds.Add(message.MessageId);
         }
 
-        announcement.ExternalId = externalId;
+        announcement.Payload?.AddRange(externalIds);
         announcement.GroupId = announcementGroup.Id;
         await _dbContext.SaveChangesAsync(cancellationToken);
         

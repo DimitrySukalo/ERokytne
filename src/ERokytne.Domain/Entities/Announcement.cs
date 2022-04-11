@@ -13,9 +13,9 @@ public class Announcement : IEntity<Guid>
     public Guid TelegramUserId { get; set; }
     
     public TelegramUser TelegramUser { get; set; }
-    
-    public int? ExternalId { get; set; }
-    
+
+    public List<int>? Payload { get; set; } = new();
+
     public Guid? GroupId { get; set; }
     
     public Group? Group { get; set; }

@@ -1,4 +1,5 @@
 using ERokytne.Domain.Contracts;
+using ERokytne.Persistence.Converters;
 using ERokytne.Persistence.ValueComparers;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,5 +1,7 @@
+using System.Text.Json;
 using ERokytne.Domain.Entities;
 using ERokytne.Persistence.Extensions;
+using ERokytne.Persistence.ValueComparers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,6 +19,11 @@ public class AnnouncementEntityTypeConfiguration : IEntityTypeConfiguration<Anno
             .HasForeignKey(e => e.AnnouncementId);
         builder.HasOne(e => e.Group).WithMany(e => e.Announcements)
             .HasForeignKey(e => e.GroupId);
+        builder.Property(e => e.Payload)
+            .HasConversion(
+                e => JsonSerializer.Serialize(e, new JsonSerializerOptions()),
+                e => JsonSerializer.Deserialize<List<int>>(e, new JsonSerializerOptions()),
+                new JsonValueComparer<List<int>>());
         
         builder.AddTrackEntityConfiguration();
     }

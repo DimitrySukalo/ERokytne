@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace ERokytne.Persistence.ValueComparers
+namespace ERokytne.Persistence.Converters
 {
     public class NullableDateTimeValueConverter : ValueConverter<DateTime?, DateTime?>
     {
