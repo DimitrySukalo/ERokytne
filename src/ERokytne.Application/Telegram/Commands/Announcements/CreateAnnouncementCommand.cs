@@ -45,6 +45,16 @@ public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
             
             return Unit.Value;
         }
+
+        if (string.IsNullOrWhiteSpace(user.NickName) || user.NickName.Equals("@"))
+        {
+            await _client.SendTextMessageAsync(request.ChatId!, 
+                "Шановний користувач, ми бачимо, що у вас немає нікнейму у вашому аккаунті телеграма. Просимо його встановити, для того," +
+                " щоб ідентифікувати оголошення і ніхто не побачив ваш номер телефону ⚡️." +
+                    " Це можна зробити у налаштуваннях вашого профілю ⚙️." +
+                    " Ми дбаємо про вашу безпеку 💻", cancellationToken: cancellationToken);
+            return Unit.Value;
+        }
         
         var announcement = new Announcement
         {
@@ -70,9 +80,7 @@ public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
             ResizeKeyboard = true
         };
 
-        await _client.SendTextMessageAsync(request.ChatId!,"☝️ Зауважте, якщо у вас немає тегу, то для ідентифікації оголошення буде використаний ваш номер телефону. " +
-                                                           "Також вам доступно опублікувати максимум 3 оголошення на день 👌\n️" 
-                                                           + "Введіть текст, який буде відображений у вашому оголошенні 💬 ",
+        await _client.SendTextMessageAsync(request.ChatId!,"Введіть текст, який буде відображений у вашому оголошенні 💬",
             replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;
