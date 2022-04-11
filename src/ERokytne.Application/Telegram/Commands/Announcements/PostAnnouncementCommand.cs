@@ -48,13 +48,10 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         var announcementGroup = await _dbContext.Groups
                                     .FirstOrDefaultAsync(e => e.IsConfirmed && e.Type == GroupType.Announcement, cancellationToken)
                                 ?? throw new ArgumentNullException("Announcement confirmed group is not found");
-        
-        var postIdentification =
-            string.IsNullOrWhiteSpace(user.NickName) || user.NickName.Equals("@") ? user.PhoneNumber : user.NickName;
 
         var text = new StringBuilder();
         text.Append($"{announcement.Text}\n");
-        text.Append($"Користувач: {postIdentification}");
+        text.Append($"Користувач: {user.NickName}");
 
         var externalIds = new List<int>();
         if (announcement.Photos.Count > 0)
