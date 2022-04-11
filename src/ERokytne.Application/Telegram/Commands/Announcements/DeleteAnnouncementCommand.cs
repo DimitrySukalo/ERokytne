@@ -57,14 +57,16 @@ public class DeleteAnnouncementCommandHandler : IRequestHandler<DeleteAnnounceme
             }
         });
 
-        try
+        foreach (var message in announcement.Payload!)
         {
-            await _client.DeleteMessageAsync(announcement.Group?.ExternalId!, announcement.ExternalId!.Value,
-                cancellationToken);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
+            try
+            {
+                await _client.DeleteMessageAsync(announcement.Group?.ExternalId!, message, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
         }
 
         await _client.EditMessageTextAsync(request.ChatId, request.MessageId,"Оголошення успішно видалено! ✅", 

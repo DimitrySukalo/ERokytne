@@ -196,7 +196,7 @@ namespace ERokytne.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
                     TelegramUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExternalId = table.Column<int>(type: "int", nullable: true),
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IsRemoved = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),

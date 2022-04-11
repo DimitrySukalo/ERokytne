@@ -48,15 +48,12 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         var announcementGroup = await _dbContext.Groups
                                     .FirstOrDefaultAsync(e => e.IsConfirmed && e.Type == GroupType.Announcement, cancellationToken)
                                 ?? throw new ArgumentNullException("Announcement confirmed group is not found");
-        
-        var postIdentification =
-            string.IsNullOrWhiteSpace(user.NickName) || user.NickName.Equals("@") ? user.PhoneNumber : user.NickName;
 
         var text = new StringBuilder();
         text.Append($"{announcement.Text}\n");
-        text.Append($"Користувач: {postIdentification}");
+        text.Append($"Користувач: {user.NickName}");
 
-        var externalId = 0;
+        var externalIds = new List<int>();
         if (announcement.Photos.Count > 0)
         {
             using var photos = new StreamCollection();
@@ -90,17 +87,17 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
             var messages = await _client.SendMediaGroupAsync(announcementGroup.ExternalId!, media,
                 cancellationToken: cancellationToken);
 
-            externalId = messages.FirstOrDefault()!.MessageId;
+            externalIds.AddRange(messages.Select(e => e.MessageId));
         }
         else
         {
             var message = await _client.SendTextMessageAsync(announcementGroup.ExternalId!, text.ToString(), 
                 cancellationToken: cancellationToken);
 
-            externalId = message.MessageId;
+            externalIds.Add(message.MessageId);
         }
 
-        announcement.ExternalId = externalId;
+        announcement.Payload?.AddRange(externalIds);
         announcement.GroupId = announcementGroup.Id;
         await _dbContext.SaveChangesAsync(cancellationToken);
         
