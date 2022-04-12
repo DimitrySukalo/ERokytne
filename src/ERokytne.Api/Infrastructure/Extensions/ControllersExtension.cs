@@ -19,7 +19,7 @@ public static class ControllersExtension
             }).AddNewtonsoftJson();
     }
     
-    public static void ConfigureEndpoints(this WebApplication webApplication, string pathBase)
+    public static void ConfigureEndpoints(this WebApplication webApplication)
     {
         webApplication.UseEndpoints(endpoints =>
         {

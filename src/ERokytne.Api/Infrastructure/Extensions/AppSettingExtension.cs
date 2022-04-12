@@ -4,7 +4,7 @@ namespace ERokytne.Api.Infrastructure.Extensions;
 
 public static class AppSettingExtension
 {
-    public static string SetInfrastructureOptions(this WebApplication webApplication, IConfiguration configuration)
+    public static void SetInfrastructureOptions(this WebApplication webApplication, IConfiguration configuration)
     {
         webApplication.UseForwardedHeaders();
         webApplication.UseRequestLocalization(o =>
@@ -19,6 +19,7 @@ public static class AppSettingExtension
                 new CookieRequestCultureProvider()
             };
         });   
+        
             
         var pathBase = configuration.GetValue<string>("ASPNETCORE_APPL_PATH");
         if (!string.IsNullOrWhiteSpace(pathBase))
@@ -33,7 +34,5 @@ public static class AppSettingExtension
         }
             
         webApplication.UseCors("DefaultCorsPolicy");
-
-        return pathBase;
     }
 }
