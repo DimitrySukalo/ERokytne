@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Надіслати повідомлення";
+}
+
+<h1>Надіслати повідомлення</h1>
+
+<form asp-action="SendNotification" method="post">
+    <div class="mb-3">
+        <label for="chatId">Номер чату</label>
+        <input type="number" class="form-control" id="chatInput" name="chatId" required />
+    </div>
+    <div class="mb-3">
+        <label for="text">Повідомлення</label>
+        <textarea class="form-control" id="textInput" name="text" placeholder="Впишіть сюди повідомлення"
+                    rows="5" maxlength="4096" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Надіслати</button>
+</form>

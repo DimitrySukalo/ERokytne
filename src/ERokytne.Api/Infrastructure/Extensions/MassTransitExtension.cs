@@ -1,3 +1,5 @@
+using ERokytne.Api.Consumers;
+using ERokytne.Application.Telegram.Commands.Notifications;
 using GreenPipes;
 using MassTransit;
 using MassTransit.Transactions;
@@ -12,7 +14,11 @@ public static class MassTransitExtension
         services.AddMassTransit(configure =>
             {
                 configure.AddBus(provider => CreateBusControl(provider, configuration));
-
+                configure.AddConsumer<SendNotificationsCommandConsumer>();
+                
+                EndpointConvention.Map<SendNotificationsCommand>(
+                    new Uri($"queue:{configuration.GetValue<string>("General:ServiceName")}:SendNotifications"));
+                
                 configure.AddMessageScheduler(new Uri("queue:SchedulerService:Commands"));
                 configure.AddTransactionalEnlistmentBus();
             })
@@ -22,7 +28,6 @@ public static class MassTransitExtension
     private static IBusControl CreateBusControl(IServiceProvider provider, 
             IConfiguration configuration)
     {
-    
         var transport = configuration.GetValue<string>("MassTransit:Transport")?.ToUpper();
     
         var busControl = transport switch
@@ -63,6 +68,19 @@ public static class MassTransitExtension
                     r.Interval(3, TimeSpan.FromSeconds(5));
                 });
                 
-            });                  
+            });
+        
+        factoryConfigurator.ReceiveEndpoint(
+            $"{configuration.GetValue<string>("General:ServiceName")}:SendNotifications",
+            configurator =>
+            {
+                configurator.UseConcurrencyLimit(1);
+                configurator.UseRetry(r =>
+                {
+                    r.Interval(3, TimeSpan.FromSeconds(5));
+                });
+                
+                configurator.Consumer<SendNotificationsCommandConsumer>(provider);
+            });
     }
 }

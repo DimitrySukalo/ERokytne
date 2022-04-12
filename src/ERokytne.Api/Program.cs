@@ -52,6 +52,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.ConfigureControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureControllers();
+builder.Services.AddApplicationHealthChecks(configuration);
 builder.Services.AddInfrastructure(configuration);
 builder.Services.AddTelegramBot(configuration);
 builder.Services.AddDiServices(configuration);
@@ -72,12 +73,11 @@ try
     await ServicesExtension.InitDatabase(configuration, app);
     app.UseStaticFiles();
     app.UseRouting();
-    var pathBase = app.SetInfrastructureOptions(configuration);
+    app.SetInfrastructureOptions(configuration);
     app.UseSwagger(o => o.SerializeAsV2 = false);
-    app.AddSwagger(pathBase, configuration);
     app.UseAuthentication();
     app.UseAuthorization();
-    app.ConfigureEndpoints(pathBase);
+    app.ConfigureEndpoints();
     app.MapRazorPages();
     app.Run();
 }
