@@ -1,5 +1,6 @@
 using ERokytne.Api.Infrastructure.Extensions;
 using ERokytne.Domain.Entities;
+using ERokytne.Infrastructure;
 using ERokytne.Persistence;
 using ERokytne.Telegram;
 using Microsoft.EntityFrameworkCore;

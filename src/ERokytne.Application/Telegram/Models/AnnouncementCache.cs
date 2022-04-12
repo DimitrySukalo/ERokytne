@@ -1,9 +1,7 @@
 namespace ERokytne.Application.Telegram.Models;
 
-public class AnnouncementCacheModel
+public class AnnouncementCache
 {
-    public string? PreviousCommand { get; set; }
-
     public Guid? Id { get; set; }
     
     public int? PageIndex { get; set; }

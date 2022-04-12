@@ -5,6 +5,7 @@ using ERokytne.Application.Telegram.Commands.Groups;
 using ERokytne.Application.Telegram.Commands.Registrations;
 using ERokytne.Application.Telegram.Commands.Support.Commands;
 using ERokytne.Application.Telegram.Commands.User.Commands;
+using ERokytne.Application.Telegram.Commands.Weather;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Telegram.Contracts;
@@ -66,7 +67,18 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 await GetPreviousAnnouncementListCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.CurrentAnnouncementsList) => 
                 await GetCurrentAnnouncementListCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.WeatherCommand) => 
+                await GetWeatherCommand(message),
             _ => await UserCommandHelper.SearchCommand(_service, message)
+        };
+    }
+    
+    private async Task<IBaseRequest> GetWeatherCommand(TelegramMessageDto messageDto)
+    {
+        await RemoveCache(messageDto);
+        return new GetWeatherCommand
+        {
+            ChatId = messageDto.ChatId.ToString()
         };
     }
     
@@ -74,13 +86,13 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     {
         var lastCommand = await _service
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}",
-                () => Task.FromResult(new AnnouncementCacheModel()));
+                () => Task.FromResult(new CacheModel()));
         
         return new MyAnnouncementsCommand
         {
             ChatId = messageDto.ChatId.ToString(),
-            PageIndex = lastCommand.PageIndex!.Value,
-            MessageId = lastCommand.MessageId
+            PageIndex = lastCommand.Announcement.PageIndex!.Value,
+            MessageId = lastCommand.Announcement.MessageId
         };
     }
     
@@ -88,13 +100,13 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     {
         var lastCommand = await _service
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}",
-                () => Task.FromResult(new AnnouncementCacheModel()));
+                () => Task.FromResult(new CacheModel()));
         
         return new MyAnnouncementsCommand
         {
             ChatId = messageDto.ChatId.ToString(),
-            PageIndex = lastCommand.PageIndex!.Value - 1,
-            MessageId = lastCommand.MessageId
+            PageIndex = lastCommand.Announcement.PageIndex!.Value - 1,
+            MessageId = lastCommand.Announcement.MessageId
         };
     }
     
@@ -102,13 +114,13 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     {
         var lastCommand = await _service
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{messageDto.ChatId}",
-                () => Task.FromResult(new AnnouncementCacheModel()));
+                () => Task.FromResult(new CacheModel()));
         
         return new MyAnnouncementsCommand
         {
             ChatId = messageDto.ChatId.ToString(),
-            PageIndex = lastCommand.PageIndex!.Value + 1,
-            MessageId = lastCommand.MessageId
+            PageIndex = lastCommand.Announcement.PageIndex!.Value + 1,
+            MessageId = lastCommand.Announcement.MessageId
         };
     }
 
@@ -140,12 +152,12 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     {
         var lastCommand = await _service
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{message.ChatId}",
-                () => Task.FromResult(new AnnouncementCacheModel()));
+                () => Task.FromResult(new CacheModel()));
         
         return new CancelAnnouncementCommand
         {
             ChatId = message.ChatId.ToString(),
-            Id = lastCommand.Id
+            Id = lastCommand.Announcement.Id
         };
     }
     
@@ -153,12 +165,12 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     {
         var lastCommand = await _service
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{message.ChatId}",
-                () => Task.FromResult(new AnnouncementCacheModel()));
+                () => Task.FromResult(new CacheModel()));
         
         return new PostAnnouncementCommand
         {
             ChatId = message.ChatId.ToString(),
-            AnnouncementId = lastCommand.Id
+            AnnouncementId = lastCommand.Announcement.Id
         };
     }
     

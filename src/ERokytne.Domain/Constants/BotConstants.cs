@@ -22,5 +22,7 @@ public static class BotConstants
         public const string PostAnnouncement = "📨 Опублікувати оголошення";
         public const string CancelAnnouncement = "❌ Відмінити оголошення";
         public const string DeleteAnnouncement = "❌ Видалити оголошення";
+        public const string WeatherIsSelected = "/weatherisselected";
+        public const string ReturnWeatherDayList = "/returnweatherdaylist";
     }
 }

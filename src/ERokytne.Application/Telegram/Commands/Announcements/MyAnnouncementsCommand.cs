@@ -104,10 +104,13 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
             }
             
             await _actionService.SetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}",
-                new AnnouncementCacheModel
+                new CacheModel
                 {
-                    PageIndex = request.PageIndex,
-                    MessageId = messageId,
+                    Announcement = new AnnouncementCache
+                    {
+                        PageIndex = request.PageIndex,
+                        MessageId = messageId,
+                    },
                     PreviousCommand = BotConstants.Commands.MyAnnouncementsCommand
                 });
         }

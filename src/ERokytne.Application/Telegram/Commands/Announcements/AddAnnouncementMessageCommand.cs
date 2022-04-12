@@ -56,10 +56,13 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         await _actionService.SetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}",
-            new AnnouncementCacheModel
+            new CacheModel
             {
                 PreviousCommand = BotConstants.Commands.AnnouncementEnteredText,
-                Id = announcement.Id
+                Announcement = new AnnouncementCache
+                {
+                    Id = announcement.Id
+                }
             });
         
         var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>
