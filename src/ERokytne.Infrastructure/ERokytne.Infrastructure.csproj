@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ERokytne.Application\ERokytne.Application.csproj" />
+    </ItemGroup>
+
 </Project>

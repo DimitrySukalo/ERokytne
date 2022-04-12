@@ -33,7 +33,7 @@ public class SupportCommandHandler : IRequestHandler<SupportCommand>
             ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
 
         await _actionService.SetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}",
-            new SupportCacheModel
+            new CacheModel
             {
                 PreviousCommand = BotConstants.Commands.SupportCommand
             });

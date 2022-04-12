@@ -1,13 +1,18 @@
+using ERokytne.Application.Ports.Adapters.Weather;
+using ERokytne.Infrastructure.Adapters.WeatherApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace ERokytne.Persistence;
+namespace ERokytne.Infrastructure;
 
 public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<WeatherApiOptions>(configuration.GetSection("Services:WeatherApi"));
+        services.AddHttpClient<IWeatherApiAdapter, WeatherApiAdapter>();
+        
         services.AddCache(configuration);
     }
         

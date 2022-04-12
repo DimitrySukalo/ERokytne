@@ -103,7 +103,7 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
         await _client.SendTextMessageAsync(request.ChatId!, 
-            "Оголошення успішно створено! ✅ Тут ви можете переглядати свої та чужі оголошення: https://t.me/+Fxv4RYkSkD5lYjU6"
+            "✅ Оголошення успішно створено! Тут ви можете переглядати свої та чужі оголошення: https://t.me/+Fxv4RYkSkD5lYjU6"
             ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
         
         return Unit.Value;

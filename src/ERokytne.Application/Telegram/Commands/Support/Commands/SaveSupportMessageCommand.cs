@@ -38,7 +38,7 @@ public class SaveSupportMessageCommandHandler : IRequestHandler<SaveSupportMessa
         if (request.Text?.Length > 5000)
         {
             await _bot.SendTextMessageAsync(request.ChatId!,
-                "Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ) ☝️",
+                "☝️ Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ).",
                 cancellationToken: cancellationToken);
             return Unit.Value;
         }
@@ -51,7 +51,7 @@ public class SaveSupportMessageCommandHandler : IRequestHandler<SaveSupportMessa
         await _dbContext.SaveChangesAsync(cancellationToken);
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
 
-        await _bot.SendTextMessageAsync(request.ChatId!, "Дякуємо! Ваше повідомлення збережено 👌",
+        await _bot.SendTextMessageAsync(request.ChatId!, "👌 Дякуємо! Ваше повідомлення збережено",
             cancellationToken: cancellationToken);
         
         return Unit.Value;

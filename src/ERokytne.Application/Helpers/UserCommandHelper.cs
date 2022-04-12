@@ -2,6 +2,7 @@ using ERokytne.Application.Cache;
 using ERokytne.Application.Telegram.Commands;
 using ERokytne.Application.Telegram.Commands.Announcements;
 using ERokytne.Application.Telegram.Commands.Support.Commands;
+using ERokytne.Application.Telegram.Commands.Weather;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using MediatR;
@@ -17,28 +18,58 @@ public static class UserCommandHelper
     {
         var lastCommand = await registrationService
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{message.ChatId}",
-                () => Task.FromResult(new AnnouncementCacheModel()));
+                () => Task.FromResult(new CacheModel()));
 
         if (!string.IsNullOrWhiteSpace(lastCommand.PreviousCommand))
         {
             return lastCommand.PreviousCommand switch
             {
-                BotConstants.Commands.SellCommand => GetAddAnnouncementMessageCommand(message, lastCommand.Id),
+                BotConstants.Commands.SellCommand => GetAddAnnouncementMessageCommand(message, lastCommand.Announcement.Id),
                 BotConstants.Commands.AnnouncementEnteredText when message.Type is MessageType.Photo or MessageType.Document
-                    => GetAddAnnouncementPhotosCommand(message, lastCommand.Id),
+                    => GetAddAnnouncementPhotosCommand(message, lastCommand.Announcement.Id),
                 BotConstants.Commands.SupportCommand => GetCreateSupportMessageCommand(message),
-                BotConstants.Commands.MyAnnouncementsCommand => GetOpenAnnouncementCommand(message, lastCommand.MessageId),
-                BotConstants.Commands.OpenAnnouncementCommand => GetDeleteAnnouncementCommand(message, lastCommand.MessageId),
-                _ => null
+                BotConstants.Commands.MyAnnouncementsCommand when Guid.TryParse(message.Text, out _)
+                    => GetOpenAnnouncementCommand(message, lastCommand.Announcement.MessageId),
+                BotConstants.Commands.OpenAnnouncementCommand when Guid.TryParse(message.Text, out _) => 
+                    GetDeleteAnnouncementCommand(message, lastCommand.Announcement.MessageId),
+                BotConstants.Commands.WeatherCommand when DateTime.TryParse(message.Text, out _) =>
+                    ShowWeatherCommand(message, lastCommand.Weather.MessageId, message.Text),
+                BotConstants.Commands.WeatherIsSelected when message.Text!.Equals(BotConstants.Commands.ReturnWeatherDayList)
+                     => GetWeatherListCommand(message, lastCommand.Weather.MessageId),
+                _ => new NotFoundCommand
+                {
+                    ChatId = message.ChatId
+                }
             };
         }
-
+        
         return new NotFoundCommand
         {
             ChatId = message.ChatId
         };
     }
 
+    private static IBaseRequest GetWeatherListCommand(TelegramMessageDto messageDto, int? messageId)
+    {
+        var id = int.Parse(messageId.ToString()!);
+        return new GetWeatherCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            MessageId = id
+        };
+    }
+    
+    private static IBaseRequest ShowWeatherCommand(TelegramMessageDto messageDto, int? messageId, string? day)
+    {
+        var id = int.Parse(messageId.ToString()!);
+        return new ShowWeatherCommand
+        {
+            ChatId = messageDto.ChatId.ToString(),
+            MessageId = id,
+            Day = day
+        };
+    }
+    
     private static IBaseRequest GetDeleteAnnouncementCommand(TelegramMessageDto messageDto, int? messageId)
     {
         var id = int.Parse(messageId.ToString()!);
@@ -72,7 +103,8 @@ public static class UserCommandHelper
             },
             new List<KeyboardButton>
             {
-                new(BotConstants.Commands.SupportCommand)
+                new(BotConstants.Commands.SupportCommand),
+                new(BotConstants.Commands.WeatherCommand)
             }
         })
         {

@@ -41,7 +41,7 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
         if (request.Text?.Length > 5000)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
-                "Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ) ☝️",
+                "☝️ Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ).",
                 cancellationToken: cancellationToken);
             return Unit.Value;
         }
@@ -56,10 +56,13 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         await _actionService.SetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}",
-            new AnnouncementCacheModel
+            new CacheModel
             {
                 PreviousCommand = BotConstants.Commands.AnnouncementEnteredText,
-                Id = announcement.Id
+                Announcement = new AnnouncementCache
+                {
+                    Id = announcement.Id
+                }
             });
         
         var menu = new ReplyKeyboardMarkup(new List<KeyboardButton>

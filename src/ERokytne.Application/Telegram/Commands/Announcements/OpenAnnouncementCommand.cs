@@ -63,7 +63,7 @@ public class OpenAnnouncementCommandHandler : IRequestHandler<OpenAnnouncementCo
 
         var lastCommand = await _actionService
             .GetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}",
-                () => Task.FromResult(new AnnouncementCacheModel()));
+                () => Task.FromResult(new CacheModel()));
 
         lastCommand.PreviousCommand = BotConstants.Commands.OpenAnnouncementCommand;
         await _actionService.SetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}", lastCommand);
