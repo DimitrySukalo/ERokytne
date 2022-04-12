@@ -26,12 +26,15 @@ public class TelegramBotController : ControllerBase
     {
         var command = await _helper.FindCommand(update);
 
+        if (command is null)
+        {
+            return Ok();
+        }
+        
         try
         {
-            if (command is not null)
-            {
-                await _mediator.Send(command);
-            }
+            await _mediator.Send(command);
+
         }
         catch (Exception e)
         {
