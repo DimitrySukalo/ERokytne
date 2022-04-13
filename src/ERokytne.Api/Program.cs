@@ -1,4 +1,5 @@
 using ERokytne.Api.Infrastructure.Extensions;
+using ERokytne.Application.Localization;
 using ERokytne.Domain.Entities;
 using ERokytne.Infrastructure;
 using ERokytne.Persistence;
@@ -67,6 +68,7 @@ if (builder.Environment.IsDevelopment())
     mvcBuilder.AddRazorRuntimeCompilation();
 }
 
+await Localizer.LoadFromAssembliesAsync(typeof(Program).Assembly);
 try
 {
     var app = builder.Build();

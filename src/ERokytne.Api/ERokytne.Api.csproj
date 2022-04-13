@@ -55,4 +55,8 @@
       <ProjectReference Include="..\ERokytne.Telegram\ERokytne.Telegram.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\Localization\*" />
+    </ItemGroup>
+
 </Project>
