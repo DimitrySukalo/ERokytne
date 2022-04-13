@@ -25,4 +25,14 @@ public static class BotConstants
         public const string WeatherIsSelected = "/weatherisselected";
         public const string ReturnWeatherDayList = "/returnweatherdaylist";
     }
+    
+    public static class Messages
+    {
+        public static class StartCommand
+        {
+            public const string SharePhoneNumber = $"{nameof(StartCommand)}:{nameof(SharePhoneNumber)}";
+            public const string ConfirmPhoneByButton = $"{nameof(StartCommand)}:{nameof(ConfirmPhoneByButton)}";
+            public const string MainMenu = $"{nameof(StartCommand)}:{nameof(MainMenu)}";
+        }
+    }
 }
