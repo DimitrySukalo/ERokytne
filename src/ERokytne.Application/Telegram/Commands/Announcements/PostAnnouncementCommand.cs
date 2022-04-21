@@ -1,6 +1,7 @@
 using System.Text;
 using ERokytne.Application.Cache;
 using ERokytne.Application.Helpers;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Domain.Enums;
@@ -103,7 +104,7 @@ public class PostAnnouncementCommandHandler : IRequestHandler<PostAnnouncementCo
         
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
         await _client.SendTextMessageAsync(request.ChatId!, 
-            "✅ Оголошення успішно створено! Тут ви можете переглядати свої та чужі оголошення: https://t.me/+Fxv4RYkSkD5lYjU6"
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.IsCreatedMessage)
             ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
         
         return Unit.Value;

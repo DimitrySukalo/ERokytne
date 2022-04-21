@@ -1,5 +1,6 @@
 using ERokytne.Application.Cache;
 using ERokytne.Application.Helpers;
+using ERokytne.Application.Localization;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
 using MediatR;
@@ -46,7 +47,8 @@ public class CancelAnnouncementCommandHandler : IRequestHandler<CancelAnnounceme
 
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
 
-        await _client.SendTextMessageAsync(request.ChatId!, "Оголошення успішно відмінено! ✅"
+        await _client.SendTextMessageAsync(request.ChatId!, 
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.IsCanceledMessage)
             ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
         
         return Unit.Value;

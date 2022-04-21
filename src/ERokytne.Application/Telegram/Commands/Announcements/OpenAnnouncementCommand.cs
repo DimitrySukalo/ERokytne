@@ -1,4 +1,5 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
@@ -54,7 +55,7 @@ public class OpenAnnouncementCommandHandler : IRequestHandler<OpenAnnouncementCo
             },
             new List<InlineKeyboardButton>
             {
-                new("⬅️ Назад")
+                new(Localizer.Messages.Get(BotConstants.Messages.Announcement.BackToListMessage))
                 {
                     CallbackData = BotConstants.Commands.CurrentAnnouncementsList
                 }
@@ -69,7 +70,7 @@ public class OpenAnnouncementCommandHandler : IRequestHandler<OpenAnnouncementCo
         await _actionService.SetUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}", lastCommand);
         
         await _client.EditMessageTextAsync(request.ChatId, request.MessageId,
-            "Оберіть дію яку хочете виконати", replyMarkup: menu,
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.SelectActionMessage), replyMarkup: menu,
             cancellationToken: cancellationToken);
         
         return Unit.Value;

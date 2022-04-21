@@ -1,4 +1,6 @@
 using ERokytne.Application.Helpers;
+using ERokytne.Application.Localization;
+using ERokytne.Domain.Constants;
 using ERokytne.Domain.Entities;
 using ERokytne.Domain.Enums;
 using ERokytne.Persistence;
@@ -59,7 +61,8 @@ public class SharedPhoneCommandHandler : IRequestHandler<SharedPhoneCommand>
             return Unit.Value;
         }
         
-        await _bot.SendTextMessageAsync(request.ChatId, "Ви уже зареєстровані"
+        await _bot.SendTextMessageAsync(request.ChatId, 
+            Localizer.Messages.Get(BotConstants.Messages.Start.UserIsRegisteredMessage)
             ,replyMarkup: UserCommandHelper.GetStartMenu(), cancellationToken: cancellationToken);
 
         return Unit.Value;

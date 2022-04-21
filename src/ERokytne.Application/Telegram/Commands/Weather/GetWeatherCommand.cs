@@ -1,4 +1,5 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
@@ -67,11 +68,11 @@ public class GetWeatherCommandHandler : IRequestHandler<GetWeatherCommand>
             }
         });
 
-        var messageId = 0;
+        int messageId;
         if (request.MessageId.HasValue)
         {
             await _bot.EditMessageTextAsync(request.ChatId, request.MessageId.Value,
-                "Ви можете дізнатись погоду на 3 дні вперед. Оберіть день 📅", 
+                Localizer.Messages.Get(BotConstants.Messages.Weather.SelectDayMessage),
                 replyMarkup: menu, cancellationToken: cancellationToken);
 
             messageId = request.MessageId.Value;
@@ -79,7 +80,7 @@ public class GetWeatherCommandHandler : IRequestHandler<GetWeatherCommand>
         else
         {
             var message = await _bot.SendTextMessageAsync(request.ChatId, 
-                "Ви можете дізнатись погоду на 3 дні вперед. Оберіть день 📅", 
+                Localizer.Messages.Get(BotConstants.Messages.Weather.SelectDayMessage),
                 replyMarkup: menu, cancellationToken: cancellationToken);
 
             messageId = message.MessageId;

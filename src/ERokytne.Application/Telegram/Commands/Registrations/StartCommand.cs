@@ -1,4 +1,6 @@
 using ERokytne.Application.Helpers;
+using ERokytne.Application.Localization;
+using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -32,18 +34,21 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
         if (user is null)
         {
             var phoneKeyboard = new ReplyKeyboardMarkup(
-                KeyboardButton.WithRequestContact("☎️ Поділитися номером телефону"))
+                KeyboardButton.WithRequestContact(Localizer.Messages.Get(
+                    BotConstants.Messages.Start.SharePhoneNumberMessage)))
             {
                 ResizeKeyboard = true,
                 OneTimeKeyboard = true
             };
 
-            await _bot.SendTextMessageAsync(request.ChatId, "Підтвердіть номер за допомогою кнопки нижче ⬇️",
+            await _bot.SendTextMessageAsync(request.ChatId, Localizer.Messages.Get(
+                BotConstants.Messages.Start.ConfirmPhoneByButtonMessage),
                 replyMarkup: phoneKeyboard, cancellationToken: cancellationToken);
         }
         else
         {
-            await _bot.SendTextMessageAsync(request.ChatId, "👨‍🚀 Ви у головному меню."
+            await _bot.SendTextMessageAsync(request.ChatId, Localizer.Messages.Get(
+                    BotConstants.Messages.Start.MainMenuMessage)
                 ,replyMarkup: UserCommandHelper.GetStartMenu(), parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken);
         }

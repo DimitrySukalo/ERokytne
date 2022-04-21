@@ -1,4 +1,5 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Domain.Entities;
@@ -39,8 +40,7 @@ public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
             user.Type == TelegramUserType.User)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
-                "Ви витратили ліміт оголошень на сьогодні 😿. " +
-                "Можете почекати до завтра або видалити одне з ваших попередніх оголошень, яке було створено сьогодні ☝️",
+                Localizer.Messages.Get(BotConstants.Messages.Announcement.LimitMessage),
                 cancellationToken: cancellationToken);
             
             return Unit.Value;
@@ -49,10 +49,8 @@ public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
         if (string.IsNullOrWhiteSpace(user.NickName) || user.NickName.Equals("@"))
         {
             await _client.SendTextMessageAsync(request.ChatId!, 
-                "Шановний користувач, ми бачимо, що у вас немає нікнейму у вашому обліковому записі телеграма. Просимо його встановити, для того," +
-                " щоб ідентифікувати оголошення і ніхто не побачив ваш номер телефону ⚡️." +
-                    " Це можна зробити у налаштуваннях вашого профілю ⚙️." +
-                    " Ми дбаємо про вашу безпеку 💻", cancellationToken: cancellationToken);
+                Localizer.Messages.Get(BotConstants.Messages.Announcement.NickNameIsNotExistMessage)
+                , cancellationToken: cancellationToken);
             return Unit.Value;
         }
         
@@ -83,7 +81,8 @@ public class CreateAnnouncementHandler : IRequestHandler<CreateAnnouncement>
             ResizeKeyboard = true
         };
 
-        await _client.SendTextMessageAsync(request.ChatId!,"Введіть текст, який буде відображений у вашому оголошенні 💬",
+        await _client.SendTextMessageAsync(request.ChatId!,
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.TextMessage),
             replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;

@@ -1,3 +1,4 @@
+using ERokytne.Application.Localization;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
 using MediatR;
@@ -50,7 +51,7 @@ public class DeleteAnnouncementCommandHandler : IRequestHandler<DeleteAnnounceme
         {
             new List<InlineKeyboardButton>
             {
-                new("⬅️ Назад")
+                new(Localizer.Messages.Get(BotConstants.Messages.Announcement.BackToListMessage))
                 {
                     CallbackData = BotConstants.Commands.CurrentAnnouncementsList
                 }
@@ -69,7 +70,8 @@ public class DeleteAnnouncementCommandHandler : IRequestHandler<DeleteAnnounceme
             }
         }
 
-        await _client.EditMessageTextAsync(request.ChatId, request.MessageId,"Оголошення успішно видалено! ✅", 
+        await _client.EditMessageTextAsync(request.ChatId, request.MessageId,
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.IsDeletedMessage), 
             replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;

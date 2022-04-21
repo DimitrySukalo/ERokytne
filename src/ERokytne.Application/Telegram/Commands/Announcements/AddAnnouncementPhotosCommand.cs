@@ -1,3 +1,5 @@
+using ERokytne.Application.Localization;
+using ERokytne.Domain.Constants;
 using ERokytne.Domain.Entities;
 using ERokytne.Persistence;
 using MediatR;
@@ -37,7 +39,8 @@ public class AddAnnouncementPhotosCommandHandler : IRequestHandler<AddAnnounceme
 
         if (request.MessageType == MessageType.Document)
         {
-            await _client.SendTextMessageAsync(request.ChatId!, "⚠️ Відправляйте будь ласка фото, а не документ", 
+            await _client.SendTextMessageAsync(request.ChatId!, 
+                Localizer.Messages.Get(BotConstants.Messages.Announcement.SendOnlyPhotosMessage), 
                 cancellationToken: cancellationToken);
             return Unit.Value;
         }
