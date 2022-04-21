@@ -1,4 +1,5 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Paging;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
@@ -74,7 +75,8 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
 
             if (paginatedAnnouncements.HasPreviousPage)
             {
-                pagingKeys.Add(new InlineKeyboardButton("⬅️ Попередня сторінка")
+                pagingKeys.Add(new InlineKeyboardButton(
+                    Localizer.Messages.Get(BotConstants.Messages.Announcement.PreviousPageMessage))
                 {
                     CallbackData = BotConstants.Commands.PreviousAnnouncementsList
                 });
@@ -82,7 +84,8 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
             
             if (paginatedAnnouncements.HasNextPage)
             {
-                pagingKeys.Add(new InlineKeyboardButton("Наступна сторінка ➡️")
+                pagingKeys.Add(new InlineKeyboardButton(
+                    Localizer.Messages.Get(BotConstants.Messages.Announcement.NextPageMessage))
                 {
                     CallbackData = BotConstants.Commands.NextAnnouncementsList
                 });
@@ -117,7 +120,8 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
         else
         {
             await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
-            await _client.SendTextMessageAsync(request.ChatId!, "У вас немає оголошень 😿",
+            await _client.SendTextMessageAsync(request.ChatId!,
+                Localizer.Messages.Get(BotConstants.Messages.Announcement.IsNotExistMessage),
                 cancellationToken: cancellationToken);
         }
         
@@ -127,7 +131,8 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
     private async Task<int> SendMessage(string? chatId, IEnumerable<List<InlineKeyboardButton>> keys, 
         CancellationToken cancellationToken)
     {
-        var message = await _client.SendTextMessageAsync(chatId!, "Оберіть оголошення 📑", 
+        var message = await _client.SendTextMessageAsync(chatId!, 
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.SelectMessage), 
             replyMarkup: new InlineKeyboardMarkup(keys),
             cancellationToken: cancellationToken);
 
@@ -137,7 +142,8 @@ public class MyAnnouncementsCommandHandler : IRequestHandler<MyAnnouncementsComm
     private async Task RewriteMessage(string? chatId, IEnumerable<List<InlineKeyboardButton>> keys, int messageId,
         CancellationToken cancellationToken)
     {
-        await _client.EditMessageTextAsync(chatId!, messageId, "Оберіть оголошення 📑"
+        await _client.EditMessageTextAsync(chatId!, messageId, 
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.SelectMessage)
             ,replyMarkup: new InlineKeyboardMarkup(keys), cancellationToken: cancellationToken);
     }
 }

@@ -1,3 +1,5 @@
+using ERokytne.Application.Localization;
+using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +30,9 @@ public class NotFoundCommandHandler : IRequestHandler<NotFoundCommand>
                     cancellationToken)
             ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
         
-        await _bot.SendTextMessageAsync(request.ChatId, "Команда не найдена.", cancellationToken: cancellationToken);
+        await _bot.SendTextMessageAsync(request.ChatId, 
+            Localizer.Messages.Get(BotConstants.Messages.NotFound.CommandIsNotFoundMessage),
+            cancellationToken: cancellationToken);
         return Unit.Value;
     }
 }

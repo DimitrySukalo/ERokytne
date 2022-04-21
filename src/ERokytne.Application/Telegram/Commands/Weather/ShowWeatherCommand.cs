@@ -1,5 +1,6 @@
 using ERokytne.Application.Cache;
 using ERokytne.Application.Helpers;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Ports.Adapters.Weather;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
@@ -52,7 +53,7 @@ public class ShowWeatherCommandHandler : IRequestHandler<ShowWeatherCommand>
         {
             new List<InlineKeyboardButton>
             {
-                new("⬅️ Назад")
+                new(Localizer.Messages.Get(BotConstants.Messages.Weather.BackToDayListMessage))
                 {
                     CallbackData = BotConstants.Commands.ReturnWeatherDayList
                 }
@@ -68,7 +69,8 @@ public class ShowWeatherCommandHandler : IRequestHandler<ShowWeatherCommand>
         
         if (selectedDayInfo is null)
         {
-            await _bot.EditMessageTextAsync(request.ChatId, request.MessageId,"Не вдалося знайти інформацію 😿", 
+            await _bot.EditMessageTextAsync(request.ChatId, request.MessageId,
+                Localizer.Messages.Get(BotConstants.Messages.Weather.DataNotFoundMessage), 
                 replyMarkup: menu, cancellationToken: cancellationToken);
         }
         else

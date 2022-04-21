@@ -35,20 +35,20 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
         {
             var phoneKeyboard = new ReplyKeyboardMarkup(
                 KeyboardButton.WithRequestContact(Localizer.Messages.Get(
-                    BotConstants.Messages.Start.SharePhoneNumber)))
+                    BotConstants.Messages.Start.SharePhoneNumberMessage)))
             {
                 ResizeKeyboard = true,
                 OneTimeKeyboard = true
             };
 
             await _bot.SendTextMessageAsync(request.ChatId, Localizer.Messages.Get(
-                BotConstants.Messages.Start.ConfirmPhoneByButton),
+                BotConstants.Messages.Start.ConfirmPhoneByButtonMessage),
                 replyMarkup: phoneKeyboard, cancellationToken: cancellationToken);
         }
         else
         {
             await _bot.SendTextMessageAsync(request.ChatId, Localizer.Messages.Get(
-                    BotConstants.Messages.Start.MainMenu)
+                    BotConstants.Messages.Start.MainMenuMessage)
                 ,replyMarkup: UserCommandHelper.GetStartMenu(), parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken);
         }

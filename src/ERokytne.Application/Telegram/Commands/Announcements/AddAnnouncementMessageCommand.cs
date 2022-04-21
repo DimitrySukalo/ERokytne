@@ -1,4 +1,5 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
@@ -41,7 +42,7 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
         if (request.Text?.Length > 5000)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
-                "☝️ Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ).",
+                Localizer.Messages.Get(BotConstants.Messages.Announcement.LimitTextLengthMessage),
                 cancellationToken: cancellationToken);
             return Unit.Value;
         }
@@ -75,8 +76,7 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
         };
 
         await _client.SendTextMessageAsync(request.ChatId!, 
-            "Текст успішно збережений ✅. Можете добавити фото, опублікувати оголошення або " +
-            "відмінити процедуру створення. Після добавлень фотографій оберіть дію нижче ⬇️", 
+            Localizer.Messages.Get(BotConstants.Messages.Announcement.TextIsSavedMessage), 
             replyMarkup: menu, cancellationToken: cancellationToken);
         
         return Unit.Value;

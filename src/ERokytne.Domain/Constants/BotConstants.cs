@@ -30,9 +30,10 @@ public static class BotConstants
     {
         public static class Start
         {
-            public const string SharePhoneNumber = $"{nameof(Start)}:{nameof(SharePhoneNumber)}";
-            public const string ConfirmPhoneByButton = $"{nameof(Start)}:{nameof(ConfirmPhoneByButton)}";
-            public const string MainMenu = $"{nameof(Start)}:{nameof(MainMenu)}";
+            public const string SharePhoneNumberMessage = $"{nameof(Start)}:{nameof(SharePhoneNumberMessage)}";
+            public const string ConfirmPhoneByButtonMessage = $"{nameof(Start)}:{nameof(ConfirmPhoneByButtonMessage)}";
+            public const string MainMenuMessage = $"{nameof(Start)}:{nameof(MainMenuMessage)}";
+            public const string UserIsRegisteredMessage = $"{nameof(Start)}:{nameof(UserIsRegisteredMessage)}";
         }
         
         public static class Support
@@ -40,6 +41,38 @@ public static class BotConstants
             public const string TipMessage = $"{nameof(Support)}:{nameof(TipMessage)}";
             public const string LimitMessage = $"{nameof(Support)}:{nameof(LimitMessage)}";
             public const string TipSavedMessage = $"{nameof(Support)}:{nameof(TipSavedMessage)}";
+        }
+        
+        public static class Weather
+        {
+            public const string SelectDayMessage = $"{nameof(Weather)}:{nameof(SelectDayMessage)}";
+            public const string DataNotFoundMessage = $"{nameof(Weather)}:{nameof(DataNotFoundMessage)}";
+            public const string BackToDayListMessage = $"{nameof(Weather)}:{nameof(BackToDayListMessage)}";
+        }
+        
+        public static class Announcement
+        {
+            public const string LimitMessage = $"{nameof(Announcement)}:{nameof(LimitMessage)}";
+            public const string NickNameIsNotExistMessage =
+                $"{nameof(Announcement)}:{nameof(NickNameIsNotExistMessage)}";
+            public const string TextMessage = $"{nameof(Announcement)}:{nameof(TextMessage)}";
+            public const string IsCanceledMessage = $"{nameof(Announcement)}:{nameof(IsCanceledMessage)}";
+            public const string IsDeletedMessage = $"{nameof(Announcement)}:{nameof(IsDeletedMessage)}";
+            public const string BackToListMessage = $"{nameof(Announcement)}:{nameof(BackToListMessage)}";
+            public const string NextPageMessage = $"{nameof(Announcement)}:{nameof(NextPageMessage)}";
+            public const string PreviousPageMessage = $"{nameof(Announcement)}:{nameof(PreviousPageMessage)}";
+            public const string IsNotExistMessage = $"{nameof(Announcement)}:{nameof(IsNotExistMessage)}";
+            public const string SelectMessage = $"{nameof(Announcement)}:{nameof(SelectMessage)}";
+            public const string LimitTextLengthMessage = $"{nameof(Announcement)}:{nameof(LimitTextLengthMessage)}";
+            public const string TextIsSavedMessage = $"{nameof(Announcement)}:{nameof(TextIsSavedMessage)}";
+            public const string SendOnlyPhotosMessage = $"{nameof(Announcement)}:{nameof(SendOnlyPhotosMessage)}";
+            public const string SelectActionMessage = $"{nameof(Announcement)}:{nameof(SelectActionMessage)}";
+            public const string IsCreatedMessage = $"{nameof(Announcement)}:{nameof(IsCreatedMessage)}";
+        }
+        
+        public static class NotFound
+        {
+            public const string CommandIsNotFoundMessage = $"{nameof(NotFound)}:{nameof(CommandIsNotFoundMessage)}";
         }
     }
 }
