@@ -1,4 +1,5 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Telegram.Models;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
@@ -39,8 +40,7 @@ public class SupportCommandHandler : IRequestHandler<SupportCommand>
             });
 
         await _bot.SendTextMessageAsync(request.ChatId!, 
-            "Тут ви можете написати своє питання в підтримку або запропонувати свою ідею, як покращити функціонал бота 😼. " +
-            "Якщо ідея буде корисна та крута, то ви отримаєте приємний бонус від нас 🔥",
+            Localizer.Messages.Get(BotConstants.Messages.Support.TipMessage),
             cancellationToken: cancellationToken);
 
         return Unit.Value;

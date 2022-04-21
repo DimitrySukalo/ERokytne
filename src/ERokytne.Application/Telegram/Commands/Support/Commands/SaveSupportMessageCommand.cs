@@ -1,4 +1,5 @@
 using ERokytne.Application.Cache;
+using ERokytne.Application.Localization;
 using ERokytne.Domain.Constants;
 using ERokytne.Domain.Entities;
 using ERokytne.Persistence;
@@ -38,7 +39,7 @@ public class SaveSupportMessageCommandHandler : IRequestHandler<SaveSupportMessa
         if (request.Text?.Length > 5000)
         {
             await _bot.SendTextMessageAsync(request.ChatId!,
-                "☝️ Довжина вашого тексту перевищує встановлений ліміт ( 5000 символів ).",
+                Localizer.Messages.Get(BotConstants.Messages.Support.LimitMessage),
                 cancellationToken: cancellationToken);
             return Unit.Value;
         }
@@ -51,7 +52,8 @@ public class SaveSupportMessageCommandHandler : IRequestHandler<SaveSupportMessa
         await _dbContext.SaveChangesAsync(cancellationToken);
         await _actionService.DeleteUserCacheAsync($"{BotConstants.Cache.PreviousCommand}:{request.ChatId}");
 
-        await _bot.SendTextMessageAsync(request.ChatId!, "👌 Дякуємо! Ваше повідомлення збережено",
+        await _bot.SendTextMessageAsync(request.ChatId!, 
+            Localizer.Messages.Get(BotConstants.Messages.Support.TipSavedMessage),
             cancellationToken: cancellationToken);
         
         return Unit.Value;

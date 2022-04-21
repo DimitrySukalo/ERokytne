@@ -28,11 +28,18 @@ public static class BotConstants
     
     public static class Messages
     {
-        public static class StartCommand
+        public static class Start
         {
-            public const string SharePhoneNumber = $"{nameof(StartCommand)}:{nameof(SharePhoneNumber)}";
-            public const string ConfirmPhoneByButton = $"{nameof(StartCommand)}:{nameof(ConfirmPhoneByButton)}";
-            public const string MainMenu = $"{nameof(StartCommand)}:{nameof(MainMenu)}";
+            public const string SharePhoneNumber = $"{nameof(Start)}:{nameof(SharePhoneNumber)}";
+            public const string ConfirmPhoneByButton = $"{nameof(Start)}:{nameof(ConfirmPhoneByButton)}";
+            public const string MainMenu = $"{nameof(Start)}:{nameof(MainMenu)}";
+        }
+        
+        public static class Support
+        {
+            public const string TipMessage = $"{nameof(Support)}:{nameof(TipMessage)}";
+            public const string LimitMessage = $"{nameof(Support)}:{nameof(LimitMessage)}";
+            public const string TipSavedMessage = $"{nameof(Support)}:{nameof(TipSavedMessage)}";
         }
     }
 }
