@@ -1,13 +1,14 @@
+using ERokytne.Api.Filters;
 using ERokytne.Api.Infrastructure.Extensions;
 using ERokytne.Application.Localization;
 using ERokytne.Domain.Entities;
 using ERokytne.Infrastructure;
 using ERokytne.Persistence;
 using ERokytne.Telegram;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Formatting.Json;
-using Serilog.Sinks.GoogleCloudLogging;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json",false, true)
@@ -57,6 +58,8 @@ builder.Services.AddApplicationHealthChecks(configuration);
 builder.Services.AddInfrastructure(configuration);
 builder.Services.AddTelegramBot(configuration);
 builder.Services.AddDiServices(configuration);
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
+builder.Services.AddHangfireServer();
 
 
 builder.Services.AddDefaultIdentity<Admin>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -79,6 +82,10 @@ try
     app.UseSwagger(o => o.SerializeAsV2 = false);
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = new [] { new MyAuthorizationFilter() }
+    });
     app.ConfigureEndpoints();
     app.MapRazorPages();
     app.Run();

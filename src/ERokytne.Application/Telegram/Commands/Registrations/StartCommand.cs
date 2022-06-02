@@ -2,6 +2,7 @@ using ERokytne.Application.Helpers;
 using ERokytne.Application.Localization;
 using ERokytne.Domain.Constants;
 using ERokytne.Persistence;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
@@ -19,11 +20,13 @@ public class StartCommandHandler : IRequestHandler<StartCommand>
 {
     private readonly ITelegramBotClient _bot;
     private readonly ApplicationDbContext _dbContext;
+    private readonly ISendEndpointProvider _sendEndpointProvider;
 
-    public StartCommandHandler(ITelegramBotClient bot, ApplicationDbContext dbContext)
+    public StartCommandHandler(ITelegramBotClient bot, ApplicationDbContext dbContext, ISendEndpointProvider sendEndpointProvider)
     {
         _bot = bot;
         _dbContext = dbContext;
+        _sendEndpointProvider = sendEndpointProvider;
     }
 
     public async Task<Unit> Handle(StartCommand request, CancellationToken cancellationToken)
