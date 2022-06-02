@@ -1,18 +1,22 @@
 using ERokytne.Application.Telegram.Commands.Weather;
+using ERokytne.Persistence;
 using MassTransit;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERokytne.Api.Consumers;
 
-public class SendWeatherCommandConsumer : IConsumer<SendWeatherCommand>
+public class WeatherCommandsConsumer : IConsumer<SendWeatherCommand>, IConsumer<UpdateWeatherCommand>
 {
     private readonly IMediator _mediator;
-    private readonly ILogger<SendWeatherCommandConsumer> _logger;
+    private readonly ILogger<WeatherCommandsConsumer> _logger;
+    private readonly ApplicationDbContext _dbContext;
 
-    public SendWeatherCommandConsumer(IMediator mediator, ILogger<SendWeatherCommandConsumer> logger)
+    public WeatherCommandsConsumer(IMediator mediator, ILogger<WeatherCommandsConsumer> logger, ApplicationDbContext dbContext)
     {
         _mediator = mediator;
         _logger = logger;
+        _dbContext = dbContext;
     }
 
     public async Task Consume(ConsumeContext<SendWeatherCommand> context)
@@ -34,5 +38,16 @@ public class SendWeatherCommandConsumer : IConsumer<SendWeatherCommand>
         _logger.LogInformation(
             "Sending push notifications: {SendingCount} of {TotalCount} completed",
             messages.Count, context.Message.Chats.Count);
+    }
+
+    public async Task Consume(ConsumeContext<UpdateWeatherCommand> context)
+    {
+        var chats = await _dbContext.TelegramUsers.AsNoTracking()
+            .Where(e => !e.IsRemoved).Select(e => e.ChatId).ToListAsync();
+
+        if (chats.Any())
+        {
+            await context.Send(new SendWeatherCommand {Chats = chats});
+        }
     }
 }

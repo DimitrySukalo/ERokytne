@@ -69,6 +69,11 @@ public static class BotConstants
             public const string SelectActionMessage = $"{nameof(Announcement)}:{nameof(SelectActionMessage)}";
             public const string IsCreatedMessage = $"{nameof(Announcement)}:{nameof(IsCreatedMessage)}";
         }
+
+        public static class NewDay
+        {
+            public const string HelloMessage = $"{nameof(NewDay)}:{nameof(HelloMessage)}";
+        }
         
         public static class NotFound
         {

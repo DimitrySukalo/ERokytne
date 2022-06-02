@@ -1,14 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 using ERokytne.Application.Helpers;
+using ERokytne.Application.Localization;
 using ERokytne.Application.Ports.Adapters.Weather;
+using ERokytne.Domain.Constants;
 using MediatR;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace ERokytne.Application.Telegram.Commands.Weather;
 
 public class SendWeatherCommand : IRequest
 {
-    public List<string> Chats { get; set; }
+    public List<string?> Chats { get; set; }
 }
 
 public class SendWeatherCommandHandler : IRequestHandler<SendWeatherCommand>
@@ -29,9 +32,14 @@ public class SendWeatherCommandHandler : IRequestHandler<SendWeatherCommand>
         {
             foreach (var chatId in request.Chats)
             {
-                await _botClient.SendTextMessageAsync(chatId,
+                await _botClient.SendTextMessageAsync(chatId!,
+                    Localizer.Messages.Get(BotConstants.Messages.NewDay.HelloMessage), 
+                    cancellationToken: cancellationToken);
+                
+                await _botClient.SendTextMessageAsync(chatId!,
                     MessageHelper.GetWeatherMessage(weather.Forecast.ForecastDays.FirstOrDefault()!,
-                        DateTime.UtcNow.ToString("yyyy-MM-dd")), cancellationToken: cancellationToken);
+                        DateTime.UtcNow.ToString("yyyy-MM-dd")), ParseMode.Html, 
+                    cancellationToken: cancellationToken);
             }
         }
         else

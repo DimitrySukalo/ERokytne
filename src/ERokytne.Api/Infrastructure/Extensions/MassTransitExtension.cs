@@ -19,11 +19,14 @@ public static class MassTransitExtension
                 
                 configure.AddBus(provider => CreateBusControl(provider, configuration));
                 configure.AddConsumer<SendNotificationsCommandConsumer>();
+                configure.AddConsumer<WeatherCommandsConsumer>();
                 
                 EndpointConvention.Map<SendNotificationsCommand>(
                     new Uri($"queue:{configuration.GetValue<string>("General:ServiceName")}:SendNotifications"));
                 EndpointConvention.Map<SendWeatherCommand>(
-                    new Uri($"queue:{configuration.GetValue<string>("General:ServiceName")}:SendNotifications"));
+                    new Uri($"queue:{configuration.GetValue<string>("General:ServiceName")}:Jobs"));
+                EndpointConvention.Map<UpdateWeatherCommand>(
+                    new Uri($"queue:{configuration.GetValue<string>("General:ServiceName")}:Jobs"));
                 
                 configure.AddTransactionalEnlistmentBus();
             })
@@ -64,7 +67,8 @@ public static class MassTransitExtension
         return busControl;
     }
     
-    private static void ConfigureBusFactoryConfigurator(IReceiveConfigurator factoryConfigurator, IServiceProvider provider, IConfiguration configuration)
+    private static void ConfigureBusFactoryConfigurator(IReceiveConfigurator factoryConfigurator, IServiceProvider provider,
+        IConfiguration configuration)
     {
         factoryConfigurator.ReceiveEndpoint(
             configuration.GetValue<string>("General:ServiceName"),
@@ -89,7 +93,19 @@ public static class MassTransitExtension
                 });
                 
                 configurator.Consumer<SendNotificationsCommandConsumer>(provider);
-                configurator.Consumer<SendWeatherCommandConsumer>(provider);
+            });
+        
+        factoryConfigurator.ReceiveEndpoint(
+            $"{configuration.GetValue<string>("General:ServiceName")}:Jobs",
+            configurator =>
+            {
+                configurator.UseConcurrencyLimit(1);
+                configurator.UseRetry(r =>
+                {
+                    r.Interval(3, TimeSpan.FromSeconds(5));
+                });
+                
+                configurator.Consumer<WeatherCommandsConsumer>(provider);
             });
     }
 }

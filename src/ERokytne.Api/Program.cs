@@ -1,4 +1,5 @@
 using ERokytne.Api.Filters;
+using ERokytne.Api.Helpers;
 using ERokytne.Api.Infrastructure.Extensions;
 using ERokytne.Application.Localization;
 using ERokytne.Domain.Entities;
@@ -88,6 +89,11 @@ try
     });
     app.ConfigureEndpoints();
     app.MapRazorPages();
+    
+    //Scheduling jobs
+    await ScheduleCommandsHelper.ScheduleSendReportAsync(app);
+    
+    //run app
     app.Run();
 }
 catch (Exception e)
