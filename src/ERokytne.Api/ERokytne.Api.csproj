@@ -16,6 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Hangfire" Version="1.7.29" />
+        <PackageReference Include="MassTransit.Hangfire" Version="7.3.0" />
         <PackageReference Include="MediatR" Version="10.0.1" />
         <PackageReference Include="MassTransit.AspNetCore" Version="7.3.0" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.0" />

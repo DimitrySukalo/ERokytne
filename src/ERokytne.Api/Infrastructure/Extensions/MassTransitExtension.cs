@@ -13,13 +13,15 @@ public static class MassTransitExtension
     {
         services.AddMassTransit(configure =>
             {
+                configure.AddMessageScheduler(new Uri("queue:hangfire"));
+                configure.AddDelayedMessageScheduler();
+                
                 configure.AddBus(provider => CreateBusControl(provider, configuration));
                 configure.AddConsumer<SendNotificationsCommandConsumer>();
                 
                 EndpointConvention.Map<SendNotificationsCommand>(
                     new Uri($"queue:{configuration.GetValue<string>("General:ServiceName")}:SendNotifications"));
                 
-                configure.AddMessageScheduler(new Uri("queue:SchedulerService:Commands"));
                 configure.AddTransactionalEnlistmentBus();
             })
             .AddMassTransitHostedService();
@@ -41,6 +43,9 @@ public static class MassTransitExtension
                 });
     
                 ConfigureBusFactoryConfigurator(configure, provider, configuration);
+                configure.UseHangfireScheduler();
+                configure.UseMessageScheduler(new Uri("queue:hangfire"));
+                configure.UseDelayedMessageScheduler();
             }),
             _ => Bus.Factory.CreateUsingInMemory(configure =>
             {
