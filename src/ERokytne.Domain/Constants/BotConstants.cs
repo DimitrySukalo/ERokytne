@@ -27,6 +27,7 @@ public static class BotConstants
         public const string GetSubscriptionsCommand = "⚡️ Мої підписки";
         public const string EditSubscriptions = "/editsubscriptions";
         public const string EditWeatherSubscriptions = "/editweathersubscriptions";
+        public const string FuelInfo = "⛽ Інформація по бензину";
     }
     
     public static class Messages
@@ -90,6 +91,11 @@ public static class BotConstants
         public static class NotFound
         {
             public const string CommandIsNotFoundMessage = $"{nameof(NotFound)}:{nameof(CommandIsNotFoundMessage)}";
+        }
+        
+        public static class SomeError
+        {
+            public const string Message = $"{nameof(SomeError)}:{nameof(Message)}";
         }
     }
 }

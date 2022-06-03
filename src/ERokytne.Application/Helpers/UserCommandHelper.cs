@@ -109,6 +109,7 @@ public static class UserCommandHelper
             new List<KeyboardButton>
             {
                 new(BotConstants.Commands.GetSubscriptionsCommand),
+                new(BotConstants.Commands.FuelInfo)
             }
         })
         {

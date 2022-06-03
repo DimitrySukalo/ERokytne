@@ -94,5 +94,8 @@
   },
   "Job:SubscriptionStatusChanged": {
     "uk": "Статус підписки змінено успішно"
+  },
+  "SomeError:Message": {
+    "uk": "Ой, щось пішло не так ☹️"
   }
 }

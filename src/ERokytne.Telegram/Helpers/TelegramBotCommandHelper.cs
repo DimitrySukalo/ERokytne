@@ -1,6 +1,7 @@
 using ERokytne.Application.Cache;
 using ERokytne.Application.Helpers;
 using ERokytne.Application.Telegram.Commands.Announcements;
+using ERokytne.Application.Telegram.Commands.Fuel;
 using ERokytne.Application.Telegram.Commands.Groups;
 using ERokytne.Application.Telegram.Commands.Registrations;
 using ERokytne.Application.Telegram.Commands.Subscriptions;
@@ -33,17 +34,17 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     public async Task<IBaseRequest?> FindCommand(Update update)
     {
         var message = GetMessageDto(update, _bot);
+        if (string.IsNullOrWhiteSpace(message.Text))
+        {
+            return null!;
+        }
+        
         await _mediator.Send(new UpdateUserDataCommand
         {
             ChatId = message.ChatId.ToString(),
             FullName = $"{message.UserDto.FirstName} {message.UserDto.LastName}",
             NickName = $"@{message.UserDto.NickName}"
         });
-        
-        if (string.IsNullOrWhiteSpace(message.Text))
-        {
-            return null!;
-        }
 
         return message.Type switch
         {
@@ -75,7 +76,18 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
             MessageType.Text when message.Text.Equals(BotConstants.Commands.EditSubscriptions) || 
                                   message.Text.Equals(BotConstants.Commands.EditWeatherSubscriptions) =>
                 await GetEditSubscriptionsCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.FuelInfo) => 
+                await GetFuelInfoCommand(message),
             _ => await UserCommandHelper.SearchCommand(_service, message)
+        };
+    }
+    
+    private async Task<IBaseRequest> GetFuelInfoCommand(TelegramMessageDto message)
+    {
+        await RemoveCache(message);
+        return new GetFuelInfoCommand
+        {
+            ChatId = message.ChatId.ToString()
         };
     }
     
@@ -252,6 +264,10 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     private static TelegramMessageDto GetMessageDto(Update update, ITelegramBotClient botClient)
     {
         var messageDto = new TelegramMessageDto();
+        if (update.Type == UpdateType.ChannelPost)
+        {
+            return messageDto;
+        }
         
         if ((update.Message?.Type)?.ToString() == MessageType.Text.ToString() ||
             (update.CallbackQuery?.Message?.Type)?.ToString() == MessageType.Text.ToString())

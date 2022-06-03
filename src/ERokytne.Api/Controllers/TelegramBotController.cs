@@ -1,3 +1,4 @@
+using ERokytne.Application.Telegram.Commands;
 using ERokytne.Telegram.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -34,11 +35,17 @@ public class TelegramBotController : ControllerBase
         try
         {
             await _mediator.Send(command);
-
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
+            
+            await _mediator.Send(new SomeErrorCommand
+            {
+                ChatId = update.CallbackQuery != null
+                    ? update.CallbackQuery.Message!.Chat.Id.ToString()
+                    : update.Message!.Chat.Id.ToString()
+            });
         }
 
         return Ok();
