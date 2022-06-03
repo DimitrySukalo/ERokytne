@@ -5,7 +5,7 @@ namespace ERokytne.Infrastructure.Adapters.FuelApi.Helpers;
 
 public static class FuelParserHelper
 {
-    private static List<string> FuelType = new()
+    private static readonly List<string> FuelType = new()
     {
         "ДП готівка",
         "ДП талони картки",
