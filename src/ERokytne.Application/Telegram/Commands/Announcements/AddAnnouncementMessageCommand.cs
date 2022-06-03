@@ -39,7 +39,7 @@ public class AddAnnouncementMessageCommandHandler : IRequestHandler<AddAnnouncem
                        .FirstOrDefaultAsync(e => e.ChatId == request.ChatId && !e.IsRemoved, cancellationToken)
                    ?? throw new ArgumentNullException($"User with chat id {request.ChatId} is not found or blocked");
 
-        if (request.Text?.Length > 5000)
+        if (request.Text?.Length > 4000)
         {
             await _client.SendTextMessageAsync(request.ChatId!,
                 Localizer.Messages.Get(BotConstants.Messages.Announcement.LimitTextLengthMessage),
