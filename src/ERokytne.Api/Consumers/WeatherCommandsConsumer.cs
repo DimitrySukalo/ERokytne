@@ -1,4 +1,5 @@
 using ERokytne.Application.Telegram.Commands.Weather;
+using ERokytne.Domain.Enums;
 using ERokytne.Persistence;
 using MassTransit;
 using MediatR;
@@ -42,8 +43,9 @@ public class WeatherCommandsConsumer : IConsumer<SendWeatherCommand>, IConsumer<
 
     public async Task Consume(ConsumeContext<UpdateWeatherCommand> context)
     {
-        var chats = await _dbContext.TelegramUsers.AsNoTracking()
-            .Where(e => !e.IsRemoved).Select(e => e.ChatId).ToListAsync();
+        var chats = await _dbContext.Jobs.AsNoTracking().Include(e => e.TelegramUser)
+            .Where(e => e.IsActivated && e.Type == JobType.DailyWeather && !e.TelegramUser.IsRemoved)
+            .Select(e => e.TelegramUser.ChatId).ToListAsync();
 
         if (chats.Any())
         {

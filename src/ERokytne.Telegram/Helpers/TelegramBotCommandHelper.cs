@@ -3,6 +3,7 @@ using ERokytne.Application.Helpers;
 using ERokytne.Application.Telegram.Commands.Announcements;
 using ERokytne.Application.Telegram.Commands.Groups;
 using ERokytne.Application.Telegram.Commands.Registrations;
+using ERokytne.Application.Telegram.Commands.Subscriptions;
 using ERokytne.Application.Telegram.Commands.Support.Commands;
 using ERokytne.Application.Telegram.Commands.User.Commands;
 using ERokytne.Application.Telegram.Commands.Weather;
@@ -69,7 +70,31 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
                 await GetCurrentAnnouncementListCommand(message),
             MessageType.Text when message.Text.Equals(BotConstants.Commands.WeatherCommand) => 
                 await GetWeatherCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.GetSubscriptionsCommand) => 
+                await GetSubscriptionsCommand(message),
+            MessageType.Text when message.Text.Equals(BotConstants.Commands.EditSubscriptions) || 
+                                  message.Text.Equals(BotConstants.Commands.EditWeatherSubscriptions) =>
+                await GetEditSubscriptionsCommand(message),
             _ => await UserCommandHelper.SearchCommand(_service, message)
+        };
+    }
+    
+    private async Task<IBaseRequest> GetEditSubscriptionsCommand(TelegramMessageDto message)
+    {
+        await RemoveCache(message);
+        return new EditSubscriptionsCommand
+        {
+            ExternalUserId = message.ChatId.ToString(),
+            Text = message.Text
+        };
+    }
+    
+    private async Task<IBaseRequest> GetSubscriptionsCommand(TelegramMessageDto messageDto)
+    {
+        await RemoveCache(messageDto);
+        return new GetSubscriptionsCommand
+        {
+            ExternalUserId = messageDto.ChatId.ToString()
         };
     }
     

@@ -79,5 +79,20 @@
   },
   "NewDay:HelloMessage": {
     "uk": "Бажаємо вам продуктивного дня! Повідомляємо погоду на сьогодні ⬇️"
+  },
+  "Job:IsActivated": {
+    "uk": "Активовано \uD83D\uDFE2"
+  },
+  "Job:IsDisabled": {
+    "uk": "Не активовано \uD83D\uDD34️"
+  },
+  "Job:EditSubscriptions": {
+    "uk": "Редагувати підписки"
+  },
+  "Job:ChangeDailyWeatherReportStatus": {
+    "uk": "Активувати/Деактивувати надсилання погоди кожного дня"
+  },
+  "Job:SubscriptionStatusChanged": {
+    "uk": "Статус підписки змінено успішно"
   }
 }

@@ -105,6 +105,10 @@ public static class UserCommandHelper
             {
                 new(BotConstants.Commands.SupportCommand),
                 new(BotConstants.Commands.WeatherCommand)
+            },
+            new List<KeyboardButton>
+            {
+                new(BotConstants.Commands.GetSubscriptionsCommand),
             }
         })
         {
