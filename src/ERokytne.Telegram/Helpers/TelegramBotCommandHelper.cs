@@ -264,10 +264,6 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     private static TelegramMessageDto GetMessageDto(Update update, ITelegramBotClient botClient)
     {
         var messageDto = new TelegramMessageDto();
-        if (update.Type == UpdateType.ChannelPost)
-        {
-            return messageDto;
-        }
         
         if ((update.Message?.Type)?.ToString() == MessageType.Text.ToString() ||
             (update.CallbackQuery?.Message?.Type)?.ToString() == MessageType.Text.ToString())
