@@ -48,7 +48,15 @@ public class SharedPhoneCommandHandler : IRequestHandler<SharedPhoneCommand>
                 IsRemoved = false,
                 NickName = request.NickName,
                 FullName = request.FullName,
-                Type = TelegramUserType.User
+                Type = TelegramUserType.User,
+                Jobs = new List<Job>
+                {
+                    new()
+                    {
+                        IsActivated = true,
+                        Type = JobType.DailyWeather
+                    }
+                }
             };
 
             await _dbContext.TelegramUsers.AddAsync(user, cancellationToken);

@@ -24,6 +24,9 @@ public static class BotConstants
         public const string DeleteAnnouncement = "❌ Видалити оголошення";
         public const string WeatherIsSelected = "/weatherisselected";
         public const string ReturnWeatherDayList = "/returnweatherdaylist";
+        public const string GetSubscriptionsCommand = "⚡️ Мої підписки";
+        public const string EditSubscriptions = "/editsubscriptions";
+        public const string EditWeatherSubscriptions = "/editweathersubscriptions";
     }
     
     public static class Messages
@@ -68,6 +71,20 @@ public static class BotConstants
             public const string SendOnlyPhotosMessage = $"{nameof(Announcement)}:{nameof(SendOnlyPhotosMessage)}";
             public const string SelectActionMessage = $"{nameof(Announcement)}:{nameof(SelectActionMessage)}";
             public const string IsCreatedMessage = $"{nameof(Announcement)}:{nameof(IsCreatedMessage)}";
+        }
+
+        public static class NewDay
+        {
+            public const string HelloMessage = $"{nameof(NewDay)}:{nameof(HelloMessage)}";
+        }
+        
+        public static class Job
+        {
+            public const string IsActivated = $"{nameof(Job)}:{nameof(IsActivated)}";
+            public const string IsDisabled = $"{nameof(Job)}:{nameof(IsDisabled)}";
+            public const string EditSubscriptions = $"{nameof(Job)}:{nameof(EditSubscriptions)}";
+            public const string ChangeDailyWeatherReportStatus = $"{nameof(Job)}:{nameof(ChangeDailyWeatherReportStatus)}";
+            public const string SubscriptionStatusChanged = $"{nameof(Job)}:{nameof(SubscriptionStatusChanged)}";
         }
         
         public static class NotFound

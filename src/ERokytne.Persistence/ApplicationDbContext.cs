@@ -13,6 +13,8 @@ public class ApplicationDbContext : IdentityDbContext<Admin>
     
     public DbSet<Photo> Photos { get; set; }
     
+    public DbSet<Job> Jobs { get; set; }
+
     public DbSet<Announcement> Announcements { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
