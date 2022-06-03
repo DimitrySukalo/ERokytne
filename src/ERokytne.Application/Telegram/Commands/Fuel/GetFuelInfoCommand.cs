@@ -1,6 +1,7 @@
 using ERokytne.Application.Ports.Adapters.Fuel;
 using MediatR;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace ERokytne.Application.Telegram.Commands.Fuel;
 
@@ -23,6 +24,9 @@ public class GetFuelInfoCommandHandler : IRequestHandler<GetFuelInfoCommand>
     public async Task<Unit> Handle(GetFuelInfoCommand request, CancellationToken cancellationToken)
     {
         var fuelInfo = await _fuelAdapter.GetFuelInfo();
+
+        await _telegramBot.SendTextMessageAsync(request.ChatId!, fuelInfo, ParseMode.Html,
+            cancellationToken: cancellationToken);
         return Unit.Value;
     }
 }

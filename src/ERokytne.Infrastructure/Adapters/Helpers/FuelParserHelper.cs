@@ -1,9 +1,20 @@
+using System.Text;
 using HtmlAgilityPack;
 
 namespace ERokytne.Infrastructure.Adapters.Helpers;
 
 public static class FuelParserHelper
 {
+    private static List<string> FuelType = new()
+    {
+        "ДП готівка",
+        "ДП талони картки",
+        "А-95 готівка",
+        "А-95 талони картки",
+        "Газ продаж",
+        "Газ талони картки"
+    };
+
     public static string ParseFuelData(string data)
     {
         var htmlDocument = new HtmlDocument();
@@ -24,5 +35,35 @@ public static class FuelParserHelper
         }
         
         return fileUrl;
+    }
+
+    public static string ParseFuelResponse(string response)
+    {
+        var fuelText = new StringBuilder();
+        
+        var fuelStationId = response.IndexOf("АВІАС", StringComparison.Ordinal);
+        var fuelStations = response[fuelStationId..].Split(new[] { Environment.NewLine }, 
+            StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var fuelStation in fuelStations)
+        {
+            var existIndex = fuelStation.Length - 11;
+
+            var fuelStationName = fuelStation[..existIndex].Trim();
+            fuelText.Append($"<b>{fuelStationName}</b>\n");
+            
+            var inStock = fuelStation[existIndex..].Split(' ');
+
+            var counter = 0;
+            foreach (var inStockInfo in inStock)
+            {
+                fuelText.Append($"{FuelType[counter]}: {inStockInfo}\n");
+                counter++;
+            }
+
+            fuelText.Append(" \n");
+        }
+        
+        return fuelText.ToString();
     }
 }

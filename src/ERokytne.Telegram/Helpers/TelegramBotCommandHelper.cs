@@ -34,17 +34,17 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     public async Task<IBaseRequest?> FindCommand(Update update)
     {
         var message = GetMessageDto(update, _bot);
+        if (string.IsNullOrWhiteSpace(message.Text))
+        {
+            return null!;
+        }
+        
         await _mediator.Send(new UpdateUserDataCommand
         {
             ChatId = message.ChatId.ToString(),
             FullName = $"{message.UserDto.FirstName} {message.UserDto.LastName}",
             NickName = $"@{message.UserDto.NickName}"
         });
-        
-        if (string.IsNullOrWhiteSpace(message.Text))
-        {
-            return null!;
-        }
 
         return message.Type switch
         {
@@ -264,6 +264,10 @@ public class TelegramBotCommandHelper : ITelegramBotCommandHelper
     private static TelegramMessageDto GetMessageDto(Update update, ITelegramBotClient botClient)
     {
         var messageDto = new TelegramMessageDto();
+        if (update.Type == UpdateType.ChannelPost)
+        {
+            return messageDto;
+        }
         
         if ((update.Message?.Type)?.ToString() == MessageType.Text.ToString() ||
             (update.CallbackQuery?.Message?.Type)?.ToString() == MessageType.Text.ToString())

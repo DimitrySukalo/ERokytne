@@ -18,7 +18,7 @@ public class FuelApiAdapter : IFuelAdapter
         await using var documentStream = webClient.OpenRead(new Uri($"{FuelUrlHelper.BaseUrl}{fileUrl}"));
         var reader = new PdfReader(documentStream);
         var text = PdfTextExtractor.GetTextFromPage(reader, 1, new SimpleTextExtractionStrategy());
-        
-        return string.Empty;
+
+        return FuelParserHelper.ParseFuelResponse(text);
     }
 }
