@@ -1,6 +1,6 @@
 using System.Net;
 using ERokytne.Application.Ports.Adapters.Fuel;
-using ERokytne.Infrastructure.Adapters.Helpers;
+using ERokytne.Infrastructure.Adapters.FuelApi.Helpers;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 

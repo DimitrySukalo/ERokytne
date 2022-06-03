@@ -1,4 +1,4 @@
-namespace ERokytne.Infrastructure.Adapters.Helpers;
+namespace ERokytne.Infrastructure.Adapters.FuelApi.Helpers;
 
 public static class FuelUrlHelper
 {

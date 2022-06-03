@@ -1,7 +1,7 @@
 using System.Text;
 using HtmlAgilityPack;
 
-namespace ERokytne.Infrastructure.Adapters.Helpers;
+namespace ERokytne.Infrastructure.Adapters.FuelApi.Helpers;
 
 public static class FuelParserHelper
 {
