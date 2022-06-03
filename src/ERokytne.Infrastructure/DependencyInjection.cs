@@ -1,4 +1,6 @@
+using ERokytne.Application.Ports.Adapters.Fuel;
 using ERokytne.Application.Ports.Adapters.Weather;
+using ERokytne.Infrastructure.Adapters.FuelApi;
 using ERokytne.Infrastructure.Adapters.WeatherApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +14,7 @@ public static class DependencyInjection
     {
         services.Configure<WeatherApiOptions>(configuration.GetSection("Services:WeatherApi"));
         services.AddHttpClient<IWeatherApiAdapter, WeatherApiAdapter>();
+        services.AddScoped<IFuelAdapter, FuelApiAdapter>();
         
         services.AddCache(configuration);
     }

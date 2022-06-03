@@ -27,6 +27,7 @@ public static class BotConstants
         public const string GetSubscriptionsCommand = "⚡️ Мої підписки";
         public const string EditSubscriptions = "/editsubscriptions";
         public const string EditWeatherSubscriptions = "/editweathersubscriptions";
+        public const string FuelInfo = "Інформація по беннзину";
     }
     
     public static class Messages
