@@ -7,12 +7,12 @@ using Telegram.Bot;
 
 namespace ERokytne.Application.Telegram.Commands;
 
-public class NotFoundCommand : IRequest
+public class NotFoundCommand : IRequest<int>
 {
     public long ChatId { get; set; }
 }
 
-public class NotFoundCommandHandler : IRequestHandler<NotFoundCommand>
+public class NotFoundCommandHandler : IRequestHandler<NotFoundCommand, int>
 {
     private readonly ITelegramBotClient _bot;
     private readonly ApplicationDbContext _dbContext;
@@ -23,7 +23,7 @@ public class NotFoundCommandHandler : IRequestHandler<NotFoundCommand>
         _dbContext = dbContext;
     }
 
-    public async Task<Unit> Handle(NotFoundCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(NotFoundCommand request, CancellationToken cancellationToken)
     {
         _ = await _dbContext.TelegramUsers
                 .FirstOrDefaultAsync(e => e.ChatId == request.ChatId.ToString() && !e.IsRemoved, 
@@ -33,6 +33,7 @@ public class NotFoundCommandHandler : IRequestHandler<NotFoundCommand>
         await _bot.SendTextMessageAsync(request.ChatId, 
             Localizer.Messages.Get(BotConstants.Messages.NotFound.CommandIsNotFoundMessage),
             cancellationToken: cancellationToken);
-        return Unit.Value;
+        
+        return 999;
     }
 }

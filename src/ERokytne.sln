@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Application", "ERo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Infrastructure", "ERokytne.Infrastructure\ERokytne.Infrastructure.csproj", "{F07E660A-05BE-4F49-B036-4057B8F9CF8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERokytne.Tests", "ERokytne.Tests\ERokytne.Tests.csproj", "{A6093193-81CC-4A60-A727-FF9FF877BF4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{F07E660A-05BE-4F49-B036-4057B8F9CF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F07E660A-05BE-4F49-B036-4057B8F9CF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F07E660A-05BE-4F49-B036-4057B8F9CF8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6093193-81CC-4A60-A727-FF9FF877BF4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6093193-81CC-4A60-A727-FF9FF877BF4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6093193-81CC-4A60-A727-FF9FF877BF4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6093193-81CC-4A60-A727-FF9FF877BF4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
