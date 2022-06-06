@@ -12,7 +12,7 @@ public static class SomeErrorCommandHandlerTests
     private static void SomeErrorCommandHandlerReturnSuccessful()
     {
         //Arrange
-        var (telegramBot, _) = MockHelper.GetMocks();
+        var (telegramBot, _, _) = MockHelper.GetMocks();
         var someErrorCommandHandler = new SomeErrorCommandHandler(telegramBot.Object);
 
         //Act

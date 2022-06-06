@@ -13,7 +13,7 @@ public static class NotFoundCommandHandlerTests
     private static void NotFoundCommandHandlerReturnSuccessful()
     {
         //Arrange
-        var (telegramBot, dbContext) = MockHelper.GetMocks();
+        var (telegramBot, dbContext, _) = MockHelper.GetMocks();
         var notFoundCommandHandler = new NotFoundCommandHandler(telegramBot.Object, dbContext.Object);
 
         //Act
@@ -39,7 +39,7 @@ public static class NotFoundCommandHandlerTests
     private static async Task NotFoundCommandHandlerThrowsArgumentNullException()
     {
         //Arrange
-        var (telegramBot, dbContext) = MockHelper.GetMocks();
+        var (telegramBot, dbContext, _) = MockHelper.GetMocks();
         var notFoundCommandHandler = new NotFoundCommandHandler(telegramBot.Object, dbContext.Object);
 
         //Act and Assert
