@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ERokytne.Application.Telegram.Commands;
 using ERokytne.Domain.Entities;
 using ERokytne.Persistence;
@@ -16,7 +17,7 @@ namespace ERokytne.Tests.Telegram;
 public static class NotFoundCommandHandlerTests
 {
     [Fact]
-    private static void NotFoundCommandHandlerReturnNotFoundUser()
+    private static void NotFoundCommandHandlerReturnSuccessful()
     {
         //Arrange
         var telegramBot = new Mock<TelegramBotMock>();
@@ -41,6 +42,24 @@ public static class NotFoundCommandHandlerTests
 
         //Assert
         Assert.True(result);
+    }
+    
+    [Fact]
+    private static async Task NotFoundCommandHandlerThrowsArgumentNullException()
+    {
+        //Arrange
+        var telegramBot = new Mock<TelegramBotMock>();
+        var dbContext = new Mock<ApplicationDbContext>();
+        dbContext.Setup(e => e.TelegramUsers).Returns(GetUsers().Object);
+        var notFoundCommandHandler = new NotFoundCommandHandler(telegramBot.Object, dbContext.Object);
+
+        //Act and Assert
+        await Assert.ThrowsAsync<ArgumentNullException>(() => 
+            notFoundCommandHandler.Handle(new NotFoundCommand
+        {
+            ChatId = 2
+        }, CancellationToken.None));
+        
     }
 
     private static Mock<DbSet<TelegramUser>> GetUsers()
