@@ -24,6 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ERokytne.Application\ERokytne.Application.csproj" />
+      <ProjectReference Include="..\ERokytne.Infrastructure\ERokytne.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
