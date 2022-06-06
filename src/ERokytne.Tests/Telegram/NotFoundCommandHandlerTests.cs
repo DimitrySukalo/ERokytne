@@ -1,15 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ERokytne.Application.Telegram.Commands;
-using ERokytne.Domain.Entities;
-using ERokytne.Persistence;
-using ERokytne.Tests.Mocks;
-using Microsoft.EntityFrameworkCore;
-using MockQueryable.Moq;
-using Moq;
+using ERokytne.Tests.Helpers;
 using Xunit;
 
 namespace ERokytne.Tests.Telegram;
@@ -20,9 +13,7 @@ public static class NotFoundCommandHandlerTests
     private static void NotFoundCommandHandlerReturnSuccessful()
     {
         //Arrange
-        var telegramBot = new Mock<TelegramBotMock>();
-        var dbContext = new Mock<ApplicationDbContext>();
-        dbContext.Setup(e => e.TelegramUsers).Returns(GetUsers().Object);
+        var (telegramBot, dbContext) = MockHelper.GetMocks();
         var notFoundCommandHandler = new NotFoundCommandHandler(telegramBot.Object, dbContext.Object);
 
         //Act
@@ -48,9 +39,7 @@ public static class NotFoundCommandHandlerTests
     private static async Task NotFoundCommandHandlerThrowsArgumentNullException()
     {
         //Arrange
-        var telegramBot = new Mock<TelegramBotMock>();
-        var dbContext = new Mock<ApplicationDbContext>();
-        dbContext.Setup(e => e.TelegramUsers).Returns(GetUsers().Object);
+        var (telegramBot, dbContext) = MockHelper.GetMocks();
         var notFoundCommandHandler = new NotFoundCommandHandler(telegramBot.Object, dbContext.Object);
 
         //Act and Assert
@@ -59,21 +48,5 @@ public static class NotFoundCommandHandlerTests
         {
             ChatId = 2
         }, CancellationToken.None));
-        
     }
-
-    private static Mock<DbSet<TelegramUser>> GetUsers()
-    {
-        var users = new List<TelegramUser>
-        {
-            new()
-            {
-                Id = Guid.NewGuid(),
-                ChatId = "1"
-            }
-        }.AsQueryable().BuildMockDbSet();
-
-        return users;
-    }
-
 }
