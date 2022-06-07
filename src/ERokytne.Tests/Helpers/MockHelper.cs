@@ -19,7 +19,7 @@ public static class MockHelper
         var telegramBot = new Mock<TelegramBotMock>();
         var dbContext = new Mock<ApplicationDbContext>();
         var fuelAdapter = new Mock<IFuelAdapter>();
-
+        
         fuelAdapter.Setup(e => e.GetFuelInfo()).ReturnsAsync("Test data");
         dbContext.Setup(e => e.TelegramUsers).Returns(GetUsers().Object);
 

@@ -11,7 +11,7 @@ public class UserActionService
         _cachingProvider = cachingProvider;
     }
 
-    public async Task<T> GetUserCacheAsync<T>(string key, Func<Task<T>> dataRetriever)
+    public virtual async Task<T> GetUserCacheAsync<T>(string key, Func<Task<T>> dataRetriever)
     {
         var cacheValue = await _cachingProvider.GetAsync(
             key, dataRetriever, TimeSpan.FromHours(1));
@@ -19,12 +19,12 @@ public class UserActionService
         return cacheValue.Value;
     }
 
-    public async Task SetUserCacheAsync<T>(string key, T cache)
+    public virtual async Task SetUserCacheAsync<T>(string key, T cache)
     {
         await _cachingProvider.SetAsync(key, cache, TimeSpan.FromDays(1));
     }
 
-    public async Task DeleteUserCacheAsync(string key)
+    public virtual async Task DeleteUserCacheAsync(string key)
     {
         await _cachingProvider.RemoveAsync(key);
     }
