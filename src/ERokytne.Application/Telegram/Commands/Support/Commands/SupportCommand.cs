@@ -43,6 +43,8 @@ public class SupportCommandHandler : IRequestHandler<SupportCommand>
             Localizer.Messages.Get(BotConstants.Messages.Support.TipMessage),
             cancellationToken: cancellationToken);
 
+        var re = 1;
+
         return Unit.Value;
     }
 }

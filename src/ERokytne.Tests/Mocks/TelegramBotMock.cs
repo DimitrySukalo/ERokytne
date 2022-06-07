@@ -96,7 +96,7 @@ public class TelegramBotMock : ITelegramBotClient
 
     public Task<bool> TestApiAsync(CancellationToken cancellationToken = new())
     {
-        throw new NotImplementedException();
+        return Task.FromResult(true);
     }
 
     public Task DownloadFileAsync(string filePath, Stream destination,
