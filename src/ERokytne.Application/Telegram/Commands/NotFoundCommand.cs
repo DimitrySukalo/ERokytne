@@ -33,6 +33,7 @@ public class NotFoundCommandHandler : IRequestHandler<NotFoundCommand>
         await _bot.SendTextMessageAsync(request.ChatId, 
             Localizer.Messages.Get(BotConstants.Messages.NotFound.CommandIsNotFoundMessage),
             cancellationToken: cancellationToken);
+        
         return Unit.Value;
     }
 }
